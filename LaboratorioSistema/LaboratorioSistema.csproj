@@ -67,10 +67,75 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FrmInventario.aspx" />
+    <Content Include="FrmMantenimiento.aspx" />
+    <Content Include="FrmMovimientos.aspx" />
+    <Content Include="FrmPrestamos.aspx" />
+    <Content Include="FrmPrincipal.aspx" />
+    <Content Include="FrmReportes.aspx" />
+    <Content Include="FrmResponsables.aspx" />
+    <Content Include="login.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrmInventario.aspx.cs">
+      <DependentUpon>FrmInventario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FrmInventario.aspx.designer.cs">
+      <DependentUpon>FrmInventario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FrmMantenimiento.aspx.cs">
+      <DependentUpon>FrmMantenimiento.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FrmMantenimiento.aspx.designer.cs">
+      <DependentUpon>FrmMantenimiento.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FrmMovimientos.aspx.cs">
+      <DependentUpon>FrmMovimientos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FrmMovimientos.aspx.designer.cs">
+      <DependentUpon>FrmMovimientos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FrmPrestamos.aspx.cs">
+      <DependentUpon>FrmPrestamos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FrmPrestamos.aspx.designer.cs">
+      <DependentUpon>FrmPrestamos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FrmPrincipal.aspx.cs">
+      <DependentUpon>FrmPrincipal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FrmPrincipal.aspx.designer.cs">
+      <DependentUpon>FrmPrincipal.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FrmReportes.aspx.cs">
+      <DependentUpon>FrmReportes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FrmReportes.aspx.designer.cs">
+      <DependentUpon>FrmReportes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FrmResponsables.aspx.cs">
+      <DependentUpon>FrmResponsables.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FrmResponsables.aspx.designer.cs">
+      <DependentUpon>FrmResponsables.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="login.aspx.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="login.aspx.designer.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="styles.css" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
