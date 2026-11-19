@@ -16,7 +16,18 @@ namespace LaboratorioSistema
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            lblMensaje.Text = "Botón funcionando correctamente";
+            string usuario = "admin";
+            string clave = "1234";
+
+            if (txtUsuario.Text == usuario && txtClave.Text == clave)
+            {
+                lblMensaje.Text = "Inicio de sesion exitoso";
+                Response.Redirect("FrmPrincipal.aspx");
+            }
+            else
+            {
+                lblMensaje.Text = "Usuario o clave incorrectos";
+            }
         }
     }
 }

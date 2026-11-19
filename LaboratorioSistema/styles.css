@@ -1,5 +1,4 @@
-﻿
-/* =================================
+﻿/* =================================
    CONFIGURACIÓN GENERAL
 ================================= */
 
@@ -16,19 +15,26 @@ body {
     justify-content: center;
     align-items: center;
     background: linear-gradient(135deg, #0f172a, #173b67, #2563a6);
-    overflow: hidden;
+    overflow-x: hidden;
     position: relative;
 }
 
-    /* Círculos decorativos del fondo */
+    /* Ajuste para páginas internas (con scroll vertical habilitado) */
+    body.app-body {
+        display: block;
+        overflow-y: auto;
+        padding: 25px 20px;
+    }
 
+    /* Círculos decorativos del fondo */
     body::before,
     body::after {
         content: "";
-        position: absolute;
+        position: fixed;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.06);
         pointer-events: none;
+        z-index: 0;
     }
 
     body::before {
@@ -46,7 +52,23 @@ body {
     }
 
 /* =================================
-   CONTENEDOR LOGIN
+   ANIMACIÓN
+================================= */
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =================================
+   CONTENEDOR LOGIN (login.aspx)
 ================================= */
 
 .login-container {
@@ -67,93 +89,59 @@ body {
         box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
     }
 
-/* =================================
-   ANIMACIÓN
-================================= */
-
-@keyframes aparecer {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
+    .login-container h2 {
+        color: #173b67;
+        font-size: 29px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        .login-container h2::after {
+            content: "";
+            display: block;
+            width: 55px;
+            height: 4px;
+            background: #2685d8;
+            border-radius: 5px;
+            margin: 15px auto 25px;
+        }
 
-/* =================================
-   TÍTULO
-================================= */
-
-.login-container h2 {
-    color: #173b67;
-    font-size: 29px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
-}
-
-    .login-container h2::after {
-        content: "";
+    .login-container label {
         display: block;
-        width: 55px;
-        height: 4px;
-        background: #2685d8;
-        border-radius: 5px;
-        margin: 15px auto 25px;
+        text-align: left;
+        color: #334155;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 9px;
     }
 
-/* =================================
-   ETIQUETAS
-================================= */
+    .login-container input[type="text"],
+    .login-container input[type="password"] {
+        width: 100%;
+        height: 48px;
+        padding: 0 15px;
+        margin-bottom: 22px;
+        border: 1.5px solid #d8e0ea;
+        border-radius: 10px;
+        background: #f8fafc;
+        font-size: 14px;
+        color: #1e293b;
+        outline: none;
+        transition: all 0.3s ease;
+    }
 
-.login-container label {
-    display: block;
-    text-align: left;
-    color: #334155;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 9px;
-}
+    .login-container input::placeholder {
+        color: #94a3b8;
+    }
 
-/* =================================
-   CAMPOS DE TEXTO
-================================= */
-
-.login-container input[type="text"],
-.login-container input[type="password"] {
-    width: 100%;
-    height: 48px;
-    padding: 0 15px;
-    margin-bottom: 22px;
-    border: 1.5px solid #d8e0ea;
-    border-radius: 10px;
-    background: #f8fafc;
-    font-size: 14px;
-    color: #1e293b;
-    outline: none;
-    transition: all 0.3s ease;
-}
-
-.login-container input::placeholder {
-    color: #94a3b8;
-}
-
-/* Efecto al seleccionar los campos */
-
-.login-container input[type="text"]:focus,
-.login-container input[type="password"]:focus {
-    border-color: #2685d8;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(38, 133, 216, 0.12);
-    transform: scale(1.02);
-}
-
-/* =================================
-   BOTÓN INGRESAR
-================================= */
+    .login-container input[type="text"]:focus,
+    .login-container input[type="password"]:focus {
+        border-color: #2685d8;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(38, 133, 216, 0.12);
+        transform: scale(1.02);
+    }
 
 .btn-login {
     width: 100%;
@@ -171,8 +159,6 @@ body {
     transition: all 0.3s ease;
 }
 
-    /* Efecto del botón */
-
     .btn-login:hover {
         background: linear-gradient(135deg, #2685d8, #173b67);
         transform: translateY(-3px);
@@ -184,28 +170,388 @@ body {
     }
 
 /* =================================
-   MENSAJES
+   ESTRUCTURA GENERAL DEL SISTEMA
+================================= */
+
+.app-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: aparecer 0.6s ease;
+}
+
+/* Barra Superior (Topbar) */
+.topbar {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px;
+    padding: 18px 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.topbar-brand h1 {
+    color: #173b67;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.topbar-brand span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-badge {
+    background: #eff6ff;
+    color: #173b67;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #bfdbfe;
+}
+
+/* =================================
+   MENÚ PRINCIPAL (FrmPrincipal)
+================================= */
+
+.dashboard-container {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    .dashboard-header h2 {
+        color: #173b67;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+        .dashboard-header h2::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #2685d8;
+            border-radius: 5px;
+            margin: 12px auto;
+        }
+
+    .dashboard-header p {
+        color: #64748b;
+        font-size: 15px;
+    }
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 22px;
+}
+
+.menu-card {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+    .menu-card:hover {
+        background: #ffffff;
+        border-color: #2685d8;
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(23, 59, 103, 0.15);
+    }
+
+.card-icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.menu-card h3 {
+    color: #173b67;
+    font-size: 19px;
+    margin-bottom: 8px;
+}
+
+.menu-card p {
+    color: #64748b;
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.btn-menu {
+    width: 100%;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #173b67, #2685d8);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-menu:hover {
+        background: linear-gradient(135deg, #2685d8, #173b67);
+        box-shadow: 0 6px 15px rgba(38, 133, 216, 0.3);
+    }
+
+/* =================================
+   DISEÑO PARA FORMULARIOS INTERNOS
+   (Inventario, Préstamos, Reportes, etc.)
+================================= */
+
+.module-container {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 20px;
+    padding: 30px 35px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+.module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+    .module-header h2 {
+        color: #173b67;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+/* Cuadrícula de campos de formulario */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+    .form-group label {
+        color: #334155;
+        font-size: 13.5px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+.form-control {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1.5px solid #d8e0ea;
+    border-radius: 9px;
+    background: #f8fafc;
+    font-size: 14px;
+    color: #1e293b;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+textarea.form-control {
+    height: auto;
+    padding: 10px 12px;
+    resize: vertical;
+}
+
+.form-control:focus {
+    border-color: #2685d8;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(38, 133, 216, 0.12);
+}
+
+/* Barra de botones de acción (Guardar, Editar, Eliminar, Volver) */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.btn {
+    height: 42px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: #ffffff;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #173b67, #2685d8);
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #2685d8, #173b67);
+        transform: translateY(-2px);
+    }
+
+.btn-success {
+    background: #16a34a;
+}
+
+    .btn-success:hover {
+        background: #15803d;
+        transform: translateY(-2px);
+    }
+
+.btn-warning {
+    background: #d97706;
+}
+
+    .btn-warning:hover {
+        background: #b45309;
+        transform: translateY(-2px);
+    }
+
+.btn-danger, .btn-logout {
+    background: #dc2626;
+    color: #ffffff;
+    border: none;
+    border-radius: 9px;
+    padding: 0 18px;
+    height: 40px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+    .btn-danger:hover, .btn-logout:hover {
+        background: #b91c1c;
+        transform: translateY(-2px);
+    }
+
+.btn-secondary {
+    background: #475569;
+}
+
+    .btn-secondary:hover {
+        background: #334155;
+        transform: translateY(-2px);
+    }
+
+/* Barra de búsqueda y filtros */
+.search-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+/* Tablas / GridView de ASP.NET */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+}
+
+    .grid-table th {
+        background: #173b67;
+        color: #ffffff;
+        padding: 12px 15px;
+        font-weight: 600;
+    }
+
+    .grid-table td {
+        padding: 11px 15px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #334155;
+    }
+
+    .grid-table tr:nth-child(even) {
+        background: #f8fafc;
+    }
+
+    .grid-table tr:hover {
+        background: #eff6ff;
+    }
+
+/* =================================
+   MENSAJES DE ESTADO
 ================================= */
 
 .error {
     display: block;
-    margin-top: 18px;
+    margin-top: 15px;
     color: #dc3545;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+.success-msg {
+    display: block;
+    margin-top: 15px;
+    color: #16a34a;
+    font-size: 13.5px;
+    font-weight: 600;
 }
 
 /* =================================
    RESPONSIVE
 ================================= */
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
     .login-container {
-        width: 90%;
+        width: 92%;
         padding: 35px 25px;
     }
 
         .login-container h2 {
             font-size: 25px;
         }
+
+    .dashboard-container,
+    .module-container {
+        padding: 20px;
+    }
 }
