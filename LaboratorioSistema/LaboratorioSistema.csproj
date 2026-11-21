@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="Articulo.cs" />
     <Compile Include="Categoria.cs" />
+    <Compile Include="ComponenteElectronico.cs" />
     <Compile Include="Equipo.cs" />
     <Compile Include="FrmInventario.aspx.cs">
       <DependentUpon>FrmInventario.aspx</DependentUpon>
@@ -130,6 +131,8 @@
     <Compile Include="FrmResponsables.aspx.designer.cs">
       <DependentUpon>FrmResponsables.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Herramienta.cs" />
+    <Compile Include="InstrumentoMedicion.cs" />
     <Compile Include="login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace LaboratorioSistema
 {
-    public class Equipo
+    public class Equipo : Articulo
     {
         // Propiedades propias de Equipo
         public string Marca { get; set; }
