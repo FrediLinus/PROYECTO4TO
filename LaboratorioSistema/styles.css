@@ -229,7 +229,7 @@ body {
 .dashboard-container {
     background: rgba(255, 255, 255, 0.97);
     border-radius: 20px;
-    padding: 35px;
+    padding: 5px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 }
 
@@ -261,7 +261,7 @@ body {
 
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 22px;
 }
 
