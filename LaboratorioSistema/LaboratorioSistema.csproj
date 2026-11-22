@@ -147,6 +147,8 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Responsable.cs" />
+    <Compile Include="ResponsablesArchivoManager.cs" />
+    <Compile Include="ResponsablesLogica.cs" />
     <Compile Include="Usuario.cs" />
     <Content Include="styles.css" />
   </ItemGroup>
