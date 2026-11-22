@@ -172,31 +172,37 @@
 
                     <asp:Button ID="btnNuevo" runat="server"
                         Text="+ Nuevo"
-                        CssClass="btn btn-secondary" />
+                        CssClass="btn btn-secondary" OnClick="btnNuevo_Click" />
 
                     <asp:Button ID="btnGuardar" runat="server"
-                        Text="Guardar"
-                        CssClass="btn btn-success" />
+                          Text="Guardar"
+                          CssClass="btn btn-primary"
+                          OnClick="btnGuardar_Click"/>
 
                     <asp:Button ID="btnModificar" runat="server"
                         Text="Modificar"
-                        CssClass="btn btn-warning" />
+                        CssClass="btn btn-warning"
+                        OnClick="btnModificar_Click" />
 
                     <asp:Button ID="btnEliminar" runat="server"
                         Text="Eliminar"
-                        CssClass="btn btn-danger" />
+                        CssClass="btn btn-danger"
+                        OnClick="btnEliminar_Click" />
 
                     <asp:Button ID="btnBuscar" runat="server"
                         Text="Buscar"
-                        CssClass="btn btn-primary" />
+                        CssClass="btn btn-primary"
+                        OnClick="btnBuscar_Click" />
 
                     <asp:Button ID="btnLimpiar" runat="server"
                         Text="Limpiar"
-                        CssClass="btn btn-secondary" />
+                        CssClass="btn btn-secondary"
+                        OnClick="btnLimpiar_Click" />
 
                     <asp:Button ID="btnActualizar" runat="server"
                         Text="Actualizar"
-                        CssClass="btn btn-primary" />
+                        CssClass="btn btn-primary"
+                        OnClick="btnActualizar_Click" />
 
                 </div>
 
@@ -221,7 +227,8 @@
 
                     <asp:Button ID="btnBuscarArticulo" runat="server"
                         Text="Buscar"
-                        CssClass="btn btn-primary" />
+                        CssClass="btn btn-primary"
+                        OnClick="btnBuscarArticulo_Click" />
 
                 </div>
 

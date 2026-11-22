@@ -1,0 +1,16 @@
+[
+  {
+    "$type": "LaboratorioSistema.Equipo, LaboratorioSistema",
+    "Marca": "HP",
+    "Modelo": "2026",
+    "NumeroSerie": "23",
+    "Codigo": 1,
+    "Nombre": "Laptop",
+    "Descripcion": "NEW STOCK",
+    "Cantidad": 8,
+    "CantidadMinima": 5,
+    "Estado": "Disponible",
+    "Ubicacion": "Laboratorio de informática",
+    "FechaAdquisicion": "2026-11-21T00:00:00"
+  }
+]
