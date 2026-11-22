@@ -14,6 +14,16 @@
 
     <form id="form1" runat="server">
 
+        <nav class="module-nav">
+            <a href="FrmPrincipal.aspx">Principal</a>
+            <a href="FrmInventario.aspx">Inventario</a>
+            <a href="FrmPrestamos.aspx">Préstamos</a>
+            <a href="FrmMantenimiento.aspx">Mantenimiento</a>
+            <a href="FrmMovimientos.aspx">Movimientos</a>
+            <a href="FrmResponsables.aspx">Responsables</a>
+            <a href="FrmReportes.aspx">Reportes</a>
+        </nav>
+
         <div class="app-wrapper">
 
             <!-- ENCABEZADO -->
@@ -38,7 +48,6 @@
                         <label>ID del artículo</label>
                         <asp:TextBox ID="txtIdArticulo" runat="server"
                             CssClass="form-control"
-                            ReadOnly="true"
                             placeholder="Generado automáticamente">
                         </asp:TextBox>
                     </div>

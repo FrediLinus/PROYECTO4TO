@@ -332,6 +332,33 @@ body {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 }
 
+.module-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.module-nav a {
+    color: #173b67;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.module-nav a:hover {
+    color: #ffffff;
+    background: #2685d8;
+    border-color: #2685d8;
+}
+
 .module-header {
     display: flex;
     justify-content: space-between;
