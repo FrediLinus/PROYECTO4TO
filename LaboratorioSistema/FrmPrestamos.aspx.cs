@@ -13,5 +13,10 @@ namespace LaboratorioSistema
         {
 
         }
+
+        protected void btnConfirmarCancelarPrestamo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
