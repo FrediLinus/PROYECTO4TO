@@ -138,6 +138,7 @@
     <Compile Include="Herramienta.cs" />
     <Compile Include="InstrumentoMedicion.cs" />
     <Compile Include="InventarioLogica.cs" />
+    <Compile Include="LaboratorioStore.cs" />
     <Compile Include="login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

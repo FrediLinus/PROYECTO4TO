@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Gestión de Responsables</title>
+    <title>Control de Existencias</title>
     <link href="styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body class="app-body">
@@ -18,115 +18,81 @@
             <a href="FrmResponsables.aspx">Responsables</a>
             <a href="FrmReportes.aspx">Reportes</a>
         </nav>
+
         <div class="app-wrapper">
             <div class="module-container">
                 <div class="module-header">
                     <div>
-                        <h2>Gestión de Responsables</h2>
-                        <p>Administración de personas autorizadas para gestionar los recursos del laboratorio</p>
+                        <h2>Control de Existencias</h2>
+                        <p>Consulta de equipos disponibles, en mantenimiento, dañados y fuera de servicio.</p>
                     </div>
                 </div>
 
-                <h3 style="color: #173b67; margin-bottom: 20px;">Información del responsable</h3>
-
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Código</label>
-                        <asp:TextBox ID="txtCodigo" runat="server" CssClass="form-control"
-                            placeholder="Generado automáticamente"></asp:TextBox>
+                        <label for="<%= txtBuscarExistencias.ClientID %>">Buscar equipo o artículo</label>
+                        <asp:TextBox ID="txtBuscarExistencias" runat="server" CssClass="form-control"
+                            placeholder="Código, nombre o tipo"></asp:TextBox>
                     </div>
                     <div class="form-group">
-                        <label>Nombre</label>
-                        <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control"
-                            placeholder="Ingrese el nombre"></asp:TextBox>
-                    </div>
-                    <div class="form-group">
-                        <label>Apellido</label>
-                        <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control"
-                            placeholder="Ingrese el apellido"></asp:TextBox>
-                    </div>
-                    <div class="form-group">
-                        <label>Correo</label>
-                        <asp:TextBox ID="txtCorreo" runat="server" CssClass="form-control"
-                            TextMode="Email" placeholder="correo@ejemplo.com"></asp:TextBox>
-                    </div>
-                    <div class="form-group">
-                        <label>Teléfono</label>
-                        <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control"
-                            placeholder="Ingrese el teléfono"></asp:TextBox>
-                    </div>
-                    <div class="form-group">
-                        <label>Rol</label>
-                        <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-control">
-                            <asp:ListItem Text="Seleccionar rol" Value=""></asp:ListItem>
-                            <asp:ListItem>Estudiante</asp:ListItem>
-                            <asp:ListItem>Docente</asp:ListItem>
-                            <asp:ListItem>Técnico</asp:ListItem>
-                            <asp:ListItem>Administrador</asp:ListItem>
-                        </asp:DropDownList>
-                    </div>
-                    <div class="form-group">
-                        <label>Cargo</label>
-                        <asp:TextBox ID="txtCargo" runat="server" CssClass="form-control"
-                            placeholder="Ingrese el cargo"></asp:TextBox>
-                    </div>
-                    <div class="form-group">
-                        <label>Área asignada</label>
-                        <asp:DropDownList ID="ddlAreaAsignada" runat="server" CssClass="form-control">
-                            <asp:ListItem Text="Seleccionar área" Value=""></asp:ListItem>
-                            <asp:ListItem>Laboratorio de informática</asp:ListItem>
-                            <asp:ListItem>Laboratorio de electrónica</asp:ListItem>
-                            <asp:ListItem>Bodega</asp:ListItem>
-                            <asp:ListItem>Taller</asp:ListItem>
+                        <label for="<%= ddlEstadoExistencias.ClientID %>">Estado</label>
+                        <asp:DropDownList ID="ddlEstadoExistencias" runat="server" CssClass="form-control">
+                            <asp:ListItem Text="Todos los estados" Value="TODOS"></asp:ListItem>
+                            <asp:ListItem Text="Disponible" Value="Disponible"></asp:ListItem>
+                            <asp:ListItem Text="En mantenimiento" Value="EnMantenimiento"></asp:ListItem>
+                            <asp:ListItem Text="Dañado" Value="Danado"></asp:ListItem>
+                            <asp:ListItem Text="Fuera de servicio" Value="FueraDeServicio"></asp:ListItem>
                         </asp:DropDownList>
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <asp:Button ID="btnNuevo" runat="server" Text="+ Nuevo"
-                        CssClass="btn btn-secondary" OnClick="btnNuevo_Click" />
-                    <asp:Button ID="btnGuardar" runat="server" Text="Guardar"
-                        CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
-                    <asp:Button ID="btnModificar" runat="server" Text="Modificar"
-                        CssClass="btn btn-warning" OnClick="btnModificar_Click" />
-                    <asp:Button ID="btnEliminar" runat="server" Text="Eliminar"
-                        CssClass="btn btn-danger" OnClick="btnEliminar_Click" />
-                    <asp:Button ID="btnBuscar" runat="server" Text="Buscar"
-                        CssClass="btn btn-primary" OnClick="btnBuscar_Click" />
-                    <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar"
-                        CssClass="btn btn-secondary" OnClick="btnLimpiar_Click" />
-                    <asp:Button ID="btnActualizar" runat="server" Text="Actualizar"
-                        CssClass="btn btn-primary" OnClick="btnActualizar_Click" />
+                    <asp:Button ID="btnFiltrarExistencias" runat="server" Text="Filtrar"
+                        CssClass="btn btn-primary" OnClick="btnFiltrarExistencias_Click" />
+                    <asp:Button ID="btnMostrarTodasExistencias" runat="server" Text="Mostrar todos"
+                        CssClass="btn btn-secondary" OnClick="btnMostrarTodasExistencias_Click" />
                 </div>
 
-                <asp:Label ID="lblMensaje" runat="server"></asp:Label>
+                <asp:Label ID="lblMensaje" runat="server" CssClass="success-msg"></asp:Label>
 
-                <div class="module-header" style="margin-top: 35px;">
-                    <div>
-                        <h2>Responsables registrados</h2>
+                <div class="form-grid">
+                    <div class="info-box">
+                        <strong>Disponibles:</strong>
+                        <asp:Label ID="lblTotalDisponibles" runat="server"></asp:Label>
+                    </div>
+                    <div class="info-box">
+                        <strong>En mantenimiento:</strong>
+                        <asp:Label ID="lblTotalMantenimiento" runat="server"></asp:Label>
+                    </div>
+                    <div class="info-box">
+                        <strong>Dañados:</strong>
+                        <asp:Label ID="lblTotalDanados" runat="server"></asp:Label>
+                    </div>
+                    <div class="info-box">
+                        <strong>Fuera de servicio:</strong>
+                        <asp:Label ID="lblTotalFueraServicio" runat="server"></asp:Label>
                     </div>
                 </div>
 
-                <div class="search-bar">
-                    <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control"
-                        placeholder="Buscar por código, nombre, apellido o correo..."
-                        style="max-width: 430px;"></asp:TextBox>
-                    <asp:Button ID="btnBuscarListado" runat="server" Text="Buscar"
-                        CssClass="btn btn-primary" OnClick="btnBuscarListado_Click" />
+                <div class="module-header" style="margin-top: 25px;">
+                    <div>
+                        <h2>Existencias registradas</h2>
+                        <p>Estado actual de los artículos y equipos del laboratorio.</p>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
-                    <asp:GridView ID="gvResponsables" runat="server" CssClass="grid-table"
-                        AutoGenerateColumns="False" GridLines="None"
-                        EmptyDataText="No hay responsables registrados." Width="100%">
+                    <asp:GridView ID="gvExistencias" runat="server" CssClass="grid-table"
+                        AutoGenerateColumns="False" EmptyDataText="No hay existencias que coincidan con el filtro.">
                         <Columns>
                             <asp:BoundField DataField="Codigo" HeaderText="Código" />
-                            <asp:BoundField DataField="NombreCompleto" HeaderText="Nombre" />
-                            <asp:BoundField DataField="Correo" HeaderText="Correo" />
-                            <asp:BoundField DataField="Telefono" HeaderText="Teléfono" />
-                            <asp:BoundField DataField="Rol" HeaderText="Rol" />
-                            <asp:BoundField DataField="Cargo" HeaderText="Cargo" />
-                            <asp:BoundField DataField="AreaAsignada" HeaderText="Área asignada" />
+                            <asp:BoundField DataField="Nombre" HeaderText="Artículo / Equipo" />
+                            <asp:BoundField DataField="Tipo" HeaderText="Tipo" />
+                            <asp:BoundField DataField="EstadoTexto" HeaderText="Estado" />
+                            <asp:BoundField DataField="CantidadDisponible" HeaderText="Disponibles" />
+                            <asp:BoundField DataField="CantidadEnMantenimiento" HeaderText="En mantenimiento" />
+                            <asp:BoundField DataField="CantidadDanada" HeaderText="Dañados" />
+                            <asp:BoundField DataField="CantidadFueraServicio" HeaderText="Fuera de servicio" />
                         </Columns>
                     </asp:GridView>
                 </div>

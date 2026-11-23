@@ -9,224 +9,94 @@ namespace LaboratorioSistema
         {
             if (!IsPostBack)
             {
-                PrepararNuevo();
-                CargarResponsables();
+                CargarExistencias();
             }
         }
 
-        private void CargarResponsables(string filtro = "")
+        protected void btnFiltrarExistencias_Click(object sender, EventArgs e)
         {
-            string texto = (filtro ?? "").Trim();
-            ResponsablesLogica logica = new ResponsablesLogica();
-
-            var lista = logica.ObtenerResponsables()
-                .Where(r => string.IsNullOrEmpty(texto)
-                    || r.Codigo.ToString().Contains(texto)
-                    || (r.Nombre ?? "").IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (r.Apellido ?? "").IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (r.Correo ?? "").IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0)
-                .Select(r => new
-                {
-                    r.Codigo,
-                    NombreCompleto = (r.Nombre + " " + r.Apellido).Trim(),
-                    r.Correo,
-                    r.Telefono,
-                    r.Rol,
-                    r.Cargo,
-                    r.AreaAsignada
-                }).ToList();
-
-            gvResponsables.DataSource = lista;
-            gvResponsables.DataBind();
+            CargarExistencias(txtBuscarExistencias.Text, ddlEstadoExistencias.SelectedValue);
         }
 
-        private void PrepararNuevo()
+        protected void btnMostrarTodasExistencias_Click(object sender, EventArgs e)
         {
-            ResponsablesLogica logica = new ResponsablesLogica();
-            var responsables = logica.ObtenerResponsables();
-            int codigo = responsables.Count > 0
-                ? responsables.Max(r => r.Codigo) + 1
-                : 1;
-
-            LimpiarFormulario();
-            txtCodigo.Text = codigo.ToString();
+            txtBuscarExistencias.Text = string.Empty;
+            ddlEstadoExistencias.SelectedValue = "TODOS";
+            CargarExistencias();
         }
 
-        protected void btnNuevo_Click(object sender, EventArgs e)
+        private void CargarExistencias(string filtro = "", string estado = "TODOS")
         {
-            PrepararNuevo();
-            lblMensaje.Text = "Nuevo responsable listo para registrar.";
+            var store = new LaboratorioStore();
+            string texto = (filtro ?? string.Empty).Trim();
+            var articulos = store.ObtenerArticulosConExistencia();
+
+            var filas = articulos.Select(a => new
+            {
+                a.Codigo,
+                a.Nombre,
+                a.Tipo,
+                EstadoTexto = ObtenerEstadoTexto(a),
+                a.CantidadDisponible,
+                a.CantidadEnMantenimiento,
+                a.CantidadDanada,
+                a.CantidadFueraServicio,
+                EstadoFiltro = ObtenerEstadoFiltro(a)
+            });
+
+            if (!string.IsNullOrWhiteSpace(texto))
+            {
+                filas = filas.Where(a =>
+                    a.Codigo.ToString().Contains(texto) ||
+                    (a.Nombre ?? string.Empty).IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    (a.Tipo ?? string.Empty).IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            if (!string.Equals(estado, "TODOS", StringComparison.OrdinalIgnoreCase))
+            {
+                filas = filas.Where(a => string.Equals(a.EstadoFiltro, estado, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var resultado = filas.ToList();
+            gvExistencias.DataSource = resultado;
+            gvExistencias.DataBind();
+
+            ActualizarResumen(articulos);
+            lblMensaje.Text = string.Format("{0} artículo(s) encontrado(s).", resultado.Count);
         }
 
-        protected void btnGuardar_Click(object sender, EventArgs e)
+        private void ActualizarResumen(System.Collections.Generic.List<ArticuloConExistencia> articulos)
         {
-            string mensaje;
-            Responsable responsable = CrearDesdeFormulario(out mensaje);
-            if (responsable == null)
-            {
-                lblMensaje.Text = mensaje;
-                return;
-            }
-
-            ResponsablesLogica logica = new ResponsablesLogica();
-            bool resultado = logica.Registrar(responsable, out mensaje);
-            lblMensaje.Text = mensaje;
-
-            if (resultado)
-            {
-                CargarResponsables();
-                PrepararNuevo();
-            }
+            lblTotalDisponibles.Text = articulos.Sum(a => a.CantidadDisponible).ToString();
+            lblTotalMantenimiento.Text = articulos.Sum(a => a.CantidadEnMantenimiento).ToString();
+            lblTotalDanados.Text = articulos.Sum(a => a.CantidadDanada).ToString();
+            lblTotalFueraServicio.Text = articulos.Sum(a => a.CantidadFueraServicio).ToString();
         }
 
-        protected void btnModificar_Click(object sender, EventArgs e)
+        private static string ObtenerEstadoTexto(ArticuloConExistencia articulo)
         {
-            string mensaje;
-            Responsable responsable = CrearDesdeFormulario(out mensaje);
-            if (responsable == null)
-            {
-                lblMensaje.Text = mensaje;
-                return;
-            }
-
-            ResponsablesLogica logica = new ResponsablesLogica();
-            bool resultado = logica.Actualizar(responsable, out mensaje);
-            lblMensaje.Text = mensaje;
-
-            if (resultado)
-            {
-                CargarResponsables();
-            }
+            if (EsFueraDeServicio(articulo)) return "Fuera de servicio";
+            if (articulo.CantidadDanada > 0) return "Dañado";
+            if (articulo.CantidadEnMantenimiento > 0) return "En mantenimiento";
+            return "Disponible";
         }
 
-        protected void btnEliminar_Click(object sender, EventArgs e)
+        private static string ObtenerEstadoFiltro(ArticuloConExistencia articulo)
         {
-            int codigo;
-            if (!int.TryParse(txtCodigo.Text, out codigo) || codigo <= 0)
-            {
-                lblMensaje.Text = "Ingrese un código válido.";
-                return;
-            }
-
-            string mensaje;
-            ResponsablesLogica logica = new ResponsablesLogica();
-            bool resultado = logica.Eliminar(codigo, out mensaje);
-            lblMensaje.Text = mensaje;
-
-            if (resultado)
-            {
-                PrepararNuevo();
-                CargarResponsables();
-            }
+            if (EsFueraDeServicio(articulo)) return "FueraDeServicio";
+            if (articulo.CantidadDanada > 0) return "Danado";
+            if (articulo.CantidadEnMantenimiento > 0) return "EnMantenimiento";
+            return "Disponible";
         }
 
-        protected void btnBuscar_Click(object sender, EventArgs e)
+        private static bool EsFueraDeServicio(ArticuloConExistencia articulo)
         {
-            int codigo;
-            if (!int.TryParse(txtCodigo.Text, out codigo) || codigo <= 0)
-            {
-                lblMensaje.Text = "Ingrese un código válido.";
-                return;
-            }
-
-            ResponsablesLogica logica = new ResponsablesLogica();
-            Responsable responsable = logica.Buscar(codigo);
-            if (responsable == null)
-            {
-                lblMensaje.Text = "No se encontró un responsable con ese código.";
-                return;
-            }
-
-            CargarEnFormulario(responsable);
-            lblMensaje.Text = "Responsable encontrado.";
+            return articulo.EstadoArticulo == EstadoArticulo.FueraDeServicio;
         }
 
-        protected void btnLimpiar_Click(object sender, EventArgs e)
+        private static int CantidadFueraServicio(ArticuloConExistencia articulo)
         {
-            PrepararNuevo();
-            lblMensaje.Text = "Formulario limpiado.";
-        }
-
-        protected void btnActualizar_Click(object sender, EventArgs e)
-        {
-            CargarResponsables();
-            lblMensaje.Text = "Listado actualizado.";
-        }
-
-        protected void btnBuscarListado_Click(object sender, EventArgs e)
-        {
-            CargarResponsables(txtBuscar.Text);
-        }
-
-        private Responsable CrearDesdeFormulario(out string mensaje)
-        {
-            mensaje = "";
-            int codigo;
-
-            if (!int.TryParse(txtCodigo.Text, out codigo) || codigo <= 0)
-            {
-                mensaje = "Ingrese un código válido.";
-                return null;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtNombre.Text)
-                || string.IsNullOrWhiteSpace(txtApellido.Text))
-            {
-                mensaje = "Ingrese el nombre y el apellido.";
-                return null;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtCorreo.Text))
-            {
-                mensaje = "Ingrese el correo.";
-                return null;
-            }
-
-            if (ddlRol.SelectedIndex == 0 || ddlAreaAsignada.SelectedIndex == 0)
-            {
-                mensaje = "Seleccione el rol y el área asignada.";
-                return null;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtCargo.Text))
-            {
-                mensaje = "Ingrese el cargo.";
-                return null;
-            }
-
-            return new Responsable(
-                codigo,
-                txtNombre.Text.Trim(),
-                txtApellido.Text.Trim(),
-                txtCorreo.Text.Trim(),
-                txtTelefono.Text.Trim(),
-                ddlRol.SelectedValue,
-                txtCargo.Text.Trim(),
-                ddlAreaAsignada.SelectedValue);
-        }
-
-        private void CargarEnFormulario(Responsable responsable)
-        {
-            txtCodigo.Text = responsable.Codigo.ToString();
-            txtNombre.Text = responsable.Nombre;
-            txtApellido.Text = responsable.Apellido;
-            txtCorreo.Text = responsable.Correo;
-            txtTelefono.Text = responsable.Telefono;
-            ddlRol.SelectedValue = responsable.Rol;
-            txtCargo.Text = responsable.Cargo;
-            ddlAreaAsignada.SelectedValue = responsable.AreaAsignada;
-        }
-
-        private void LimpiarFormulario()
-        {
-            txtCodigo.Text = "";
-            txtNombre.Text = "";
-            txtApellido.Text = "";
-            txtCorreo.Text = "";
-            txtTelefono.Text = "";
-            ddlRol.SelectedIndex = 0;
-            txtCargo.Text = "";
-            ddlAreaAsignada.SelectedIndex = 0;
+            return articulo.CantidadFueraServicio;
         }
     }
 }

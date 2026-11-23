@@ -495,6 +495,29 @@ textarea.form-control {
         transform: translateY(-2px);
     }
 
+.btn-outline {
+    background: #eff6ff;
+    color: #173b67;
+    border: 1px solid #bfdbfe;
+}
+
+.btn-outline:hover {
+    background: #2685d8;
+    border-color: #2685d8;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    height: 34px;
+    padding: 0 12px;
+    font-size: 12px;
+}
+
+.form-align-bottom {
+    justify-content: flex-end;
+}
+
 /* Barra de búsqueda y filtros */
 .search-bar {
     display: flex;
@@ -505,6 +528,21 @@ textarea.form-control {
     border-radius: 12px;
     margin-bottom: 20px;
     align-items: center;
+}
+
+.info-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: #173b67;
+    font-size: 14px;
+}
+
+.info-box strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
 }
 
 /* Tablas / GridView de ASP.NET */
@@ -728,5 +766,165 @@ textarea.form-control {
 
     .reportes-resumen {
         grid-template-columns: 1fr;
+    }
+}
+
+/* =================================
+   COMPATIBILIDAD PARA PRÉSTAMOS,
+   MANTENIMIENTO Y MOVIMIENTOS
+================================= */
+
+.page-container {
+    position: relative;
+    z-index: 1;
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    animation: aparecer 0.6s ease;
+}
+
+.page-header,
+.card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+}
+
+.page-header {
+    padding: 22px 30px;
+    margin-bottom: 25px;
+}
+
+.page-title {
+    color: #173b67;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 15px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.nav-links a {
+    text-decoration: none;
+}
+
+.card {
+    padding: 25px 30px;
+    margin-bottom: 25px;
+}
+
+.card-header {
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 22px;
+    padding-bottom: 12px;
+}
+
+.card-title,
+.section-subtitle {
+    color: #173b67;
+    font-weight: 700;
+}
+
+.card-title {
+    font-size: 21px;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    margin: 22px 0 15px;
+}
+
+.card-body {
+    color: #334155;
+}
+
+.form-group-wide {
+    grid-column: 1 / -1;
+}
+
+.form-actions,
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    margin: 25px 0;
+}
+
+.info-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: #173b67;
+    font-size: 14px;
+}
+
+.info-box strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.alert {
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.alert-success {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
+}
+
+.alert-warning {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    color: #92400e;
+}
+
+.alert-error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+
+@media (max-width: 700px) {
+    body {
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .page-header,
+    .card {
+        padding: 20px;
+    }
+
+    .page-title {
+        font-size: 22px;
+    }
+
+    .form-actions .btn,
+    .form-actions input[type="submit"],
+    .form-actions input[type="button"] {
+        width: 100%;
     }
 }

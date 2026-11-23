@@ -42,22 +42,22 @@ namespace LaboratorioSistema
         protected global::System.Web.UI.WebControls.Label lblMensaje;
 
         /// <summary>
-        /// Control txtPrestamoId.
+        /// Control txtIdPrestamo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPrestamoId;
+        protected global::System.Web.UI.WebControls.TextBox txtIdPrestamo;
 
         /// <summary>
-        /// Control ddlResponsableActivo.
+        /// Control ddlResponsable.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlResponsableActivo;
+        protected global::System.Web.UI.WebControls.DropDownList ddlResponsable;
 
         /// <summary>
         /// Control txtFechaPrestamo.
@@ -78,94 +78,85 @@ namespace LaboratorioSistema
         protected global::System.Web.UI.WebControls.TextBox txtFechaPrevista;
 
         /// <summary>
-        /// Control txtEstadoPrestamo.
+        /// Control ddlEstadoPrestamo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEstadoPrestamo;
+        protected global::System.Web.UI.WebControls.DropDownList ddlEstadoPrestamo;
 
         /// <summary>
-        /// Control txtObservacionesPrestamo.
+        /// Control txtObservaciones.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtObservacionesPrestamo;
+        protected global::System.Web.UI.WebControls.TextBox txtObservaciones;
 
         /// <summary>
-        /// Control pnlResumenResponsable.
+        /// Control pnlInfoResponsable.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlResumenResponsable;
+        protected global::System.Web.UI.WebControls.Panel pnlInfoResponsable;
 
         /// <summary>
-        /// Control lblRespResumen.
+        /// Control lblInfoResponsable.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRespResumen;
+        protected global::System.Web.UI.WebControls.Label lblInfoResponsable;
 
         /// <summary>
-        /// Control ddlArticuloInventario.
+        /// Control ddlArticulo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlArticuloInventario;
+        protected global::System.Web.UI.WebControls.DropDownList ddlArticulo;
 
         /// <summary>
-        /// Control txtArtCodigo.
+        /// Control txtCodigoArticulo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtArtCodigo;
+        protected global::System.Web.UI.WebControls.TextBox txtCodigoArticulo;
 
         /// <summary>
-        /// Control txtArtNombre.
+        /// Control txtTipoArticulo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtArtNombre;
+        protected global::System.Web.UI.WebControls.TextBox txtTipoArticulo;
 
         /// <summary>
-        /// Control txtArtTipo.
+        /// Control txtEstadoArticulo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtArtTipo;
+        protected global::System.Web.UI.WebControls.TextBox txtEstadoArticulo;
 
         /// <summary>
-        /// Control txtArtEstado.
+        /// Control txtDisponibleArticulo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtArtEstado;
-
-        /// <summary>
-        /// Control txtArtDisponible.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtArtDisponible;
+        protected global::System.Web.UI.WebControls.TextBox txtDisponibleArticulo;
 
         /// <summary>
         /// Control txtCantidadSolicitada.
@@ -186,94 +177,13 @@ namespace LaboratorioSistema
         protected global::System.Web.UI.WebControls.Button btnAgregarArticulo;
 
         /// <summary>
-        /// Control gvDetallesTemporales.
+        /// Control gvDetallesPrestamo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvDetallesTemporales;
-
-        /// <summary>
-        /// Control pnlConsultaPrestamo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlConsultaPrestamo;
-
-        /// <summary>
-        /// Control lblDetallePrestamoId.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDetallePrestamoId;
-
-        /// <summary>
-        /// Control lblDetallePrestamoInfo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDetallePrestamoInfo;
-
-        /// <summary>
-        /// Control gvDetalleConsultado.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvDetalleConsultado;
-
-        /// <summary>
-        /// Control pnlConfirmarCancelar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlConfirmarCancelar;
-
-        /// <summary>
-        /// Control lblCancelarPrestamoId.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCancelarPrestamoId;
-
-        /// <summary>
-        /// Control txtMotivoCancelacion.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMotivoCancelacion;
-
-        /// <summary>
-        /// Control btnConfirmarCancelarPrestamo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnConfirmarCancelarPrestamo;
-
-        /// <summary>
-        /// Control btnAbortarCancelarPrestamo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAbortarCancelarPrestamo;
+        protected global::System.Web.UI.WebControls.GridView gvDetallesPrestamo;
 
         /// <summary>
         /// Control btnRegistrarPrestamo.
@@ -283,24 +193,6 @@ namespace LaboratorioSistema
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnRegistrarPrestamo;
-
-        /// <summary>
-        /// Control btnBuscarPrestamo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnBuscarPrestamo;
-
-        /// <summary>
-        /// Control btnConsultarDetallesPrestamo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnConsultarDetallesPrestamo;
 
         /// <summary>
         /// Control btnCancelarPrestamo.
@@ -330,22 +222,31 @@ namespace LaboratorioSistema
         protected global::System.Web.UI.WebControls.TextBox txtBuscarPrestamo;
 
         /// <summary>
-        /// Control ddlFiltroEstadoPrestamo.
+        /// Control ddlFiltroEstado.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFiltroEstadoPrestamo;
+        protected global::System.Web.UI.WebControls.DropDownList ddlFiltroEstado;
 
         /// <summary>
-        /// Control btnFiltrarPrestamos.
+        /// Control btnBuscarPrestamo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFiltrarPrestamos;
+        protected global::System.Web.UI.WebControls.Button btnBuscarPrestamo;
+
+        /// <summary>
+        /// Control btnVerTodosPrestamos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnVerTodosPrestamos;
 
         /// <summary>
         /// Control gvPrestamos.
