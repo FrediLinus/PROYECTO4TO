@@ -50,14 +50,12 @@
 
                     <div class="form-group">
                         <label>Tipo de reporte</label>
-                        <asp:DropDownList ID="ddlTipoReporte" runat="server" CssClass="form-control">
+                        <asp:DropDownList ID="ddlTipoReporte" runat="server" CssClass="form-control"
+                            AutoPostBack="true" OnSelectedIndexChanged="ddlTipoReporte_SelectedIndexChanged">
                             <asp:ListItem Text="Seleccione un reporte" Value="" />
                             <asp:ListItem Text="Reporte de inventario" Value="Inventario" />
-                            <asp:ListItem Text="Reporte de préstamos" Value="Prestamos" />
-                            <asp:ListItem Text="Reporte de devoluciones" Value="Devoluciones" />
-                            <asp:ListItem Text="Reporte de mantenimiento" Value="Mantenimiento" />
-                            <asp:ListItem Text="Reporte de movimientos" Value="Movimientos" />
-                            <asp:ListItem Text="Reporte de existencias" Value="Existencias" />
+                            <asp:ListItem Text="Utilización de equipos" Value="Utilizacion" />
+                            <asp:ListItem Text="Mantenimiento pendiente" Value="MantenimientoPendiente" />
                         </asp:DropDownList>
                     </div>
 
@@ -84,16 +82,6 @@
                         </asp:DropDownList>
                     </div>
 
-                    <div class="form-group">
-                        <label>Responsable</label>
-                        <asp:TextBox ID="txtResponsable" runat="server" CssClass="form-control" placeholder="Ingrese el responsable"></asp:TextBox>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Buscar por código o nombre</label>
-                        <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control" placeholder="Ingrese código o nombre"></asp:TextBox>
-                    </div>
-
                 </div>
 
                 <!-- BOTONES -->
@@ -111,10 +99,6 @@
                         Text="Exportar Reporte"
                         CssClass="btn btn-success" OnClick="btnExportar_Click" />
 
-                    <asp:Button ID="btnImprimir" runat="server"
-                        Text="Imprimir Reporte"
-                        CssClass="btn btn-warning" OnClick="btnImprimir_Click" />
-
                 </div>
 
                 <!-- MENSAJES -->
@@ -131,7 +115,9 @@
 
                         <asp:GridView ID="gvReportes" runat="server"
                             AutoGenerateColumns="true"
-                            CssClass="grid-table">
+                            CssClass="grid-table"
+                            EmptyDataText="No hay datos para el reporte y filtros seleccionados."
+                            ShowHeaderWhenEmpty="true">
                         </asp:GridView>
 
                     </div>

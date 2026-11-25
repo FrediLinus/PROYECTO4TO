@@ -1,0 +1,16 @@
+[
+  {
+    "IdPrestamo": 1,
+    "IdResponsable": 12938,
+    "FechaPrestamo": "2026-11-25T00:00:00",
+    "FechaPrevistaDevolucion": "2026-11-28T00:00:00",
+    "EstadoPrestamo": 0,
+    "Observaciones": "",
+    "Detalles": [
+      {
+        "IdArticulo": 2,
+        "CantidadPrestada": 1
+      }
+    ]
+  }
+]

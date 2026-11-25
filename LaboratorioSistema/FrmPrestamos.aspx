@@ -45,8 +45,43 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="<%= ddlResponsable.ClientID %>">Responsable Activo *</label>
-                            <asp:DropDownList ID="ddlResponsable" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlResponsable_SelectedIndexChanged"></asp:DropDownList>
+                            <label for="<%= txtResponsableCodigo.ClientID %>">Código del responsable *</label>
+                            <asp:TextBox ID="txtResponsableCodigo" runat="server" CssClass="form-control" TextMode="Number" min="1" placeholder="Carnet o código"></asp:TextBox>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="<%= txtResponsableNombres.ClientID %>">Nombres *</label>
+                            <asp:TextBox ID="txtResponsableNombres" runat="server" CssClass="form-control" MaxLength="100"></asp:TextBox>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="<%= txtResponsableApellidos.ClientID %>">Apellidos *</label>
+                            <asp:TextBox ID="txtResponsableApellidos" runat="server" CssClass="form-control" MaxLength="100"></asp:TextBox>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="<%= txtResponsableCorreo.ClientID %>">Correo *</label>
+                            <asp:TextBox ID="txtResponsableCorreo" runat="server" CssClass="form-control" TextMode="Email" MaxLength="150"></asp:TextBox>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="<%= txtResponsableTelefono.ClientID %>">Teléfono</label>
+                            <asp:TextBox ID="txtResponsableTelefono" runat="server" CssClass="form-control" MaxLength="30"></asp:TextBox>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="<%= txtResponsableRol.ClientID %>">Tipo de responsable *</label>
+                            <asp:TextBox ID="txtResponsableRol" runat="server" CssClass="form-control" MaxLength="50" placeholder="Estudiante, docente o técnico"></asp:TextBox>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="<%= txtResponsableCargo.ClientID %>">Cargo *</label>
+                            <asp:TextBox ID="txtResponsableCargo" runat="server" CssClass="form-control" MaxLength="100"></asp:TextBox>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="<%= txtResponsableArea.ClientID %>">Carrera / departamento *</label>
+                            <asp:TextBox ID="txtResponsableArea" runat="server" CssClass="form-control" MaxLength="100"></asp:TextBox>
                         </div>
 
                         <div class="form-group">

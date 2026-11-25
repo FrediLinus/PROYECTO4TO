@@ -67,26 +67,6 @@ namespace LaboratorioSistema
 
         private void CargarCombos()
         {
-            string respPrevio = ddlResponsable.SelectedValue;
-            var responsablesActivos = _store.ObtenerResponsablesActivos()
-                .Select(r => new
-                {
-                    Id = r.IdResponsable.ToString(),
-                    Texto = string.Format("{0} - {1} {2} ({3})", r.Carnet, r.Nombres, r.Apellidos, r.TipoResponsable)
-                }).ToList();
-
-            ddlResponsable.DataSource = responsablesActivos;
-            ddlResponsable.DataTextField = "Texto";
-            ddlResponsable.DataValueField = "Id";
-            ddlResponsable.DataBind();
-            ddlResponsable.Items.Insert(0, new ListItem("-- Seleccione responsable activo --", ""));
-
-            if (!string.IsNullOrEmpty(respPrevio) && ddlResponsable.Items.FindByValue(respPrevio) != null)
-            {
-                ddlResponsable.SelectedValue = respPrevio;
-            }
-            ActualizarInfoResponsable();
-
             string artPrevio = ddlArticulo.SelectedValue;
             var articulos = _store.ObtenerArticulosConExistencia()
                 .Select(a => new
@@ -106,29 +86,6 @@ namespace LaboratorioSistema
                 ddlArticulo.SelectedValue = artPrevio;
             }
             ActualizarInfoArticulo();
-        }
-
-        protected void ddlResponsable_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ActualizarInfoResponsable();
-        }
-
-        private void ActualizarInfoResponsable()
-        {
-            if (!int.TryParse(ddlResponsable.SelectedValue, out int idResp))
-            {
-                pnlInfoResponsable.Visible = false;
-                lblInfoResponsable.Text = string.Empty;
-                return;
-            }
-
-            var resp = _store.BuscarResponsablePorId(idResp);
-            if (resp != null)
-            {
-                pnlInfoResponsable.Visible = true;
-                lblInfoResponsable.Text = string.Format("{0} {1} | Carnet: {2} | Área: {3} | Tel: {4} | Correo: {5}",
-                    resp.Nombres, resp.Apellidos, resp.Carnet, resp.CarreraDepartamento, resp.Telefono, resp.Correo);
-            }
         }
 
         protected void ddlArticulo_SelectedIndexChanged(object sender, EventArgs e)
@@ -246,9 +203,11 @@ namespace LaboratorioSistema
         {
             try
             {
-                if (!int.TryParse(ddlResponsable.SelectedValue, out int idResponsable))
+                string mensajeResponsable;
+                int idResponsable;
+                if (!ObtenerResponsableDesdeFormulario(out idResponsable, out mensajeResponsable))
                 {
-                    MostrarMensaje("Debe seleccionar un responsable activo.", "advertencia");
+                    MostrarMensaje(mensajeResponsable, "advertencia");
                     return;
                 }
 
@@ -320,7 +279,14 @@ namespace LaboratorioSistema
         protected void btnLimpiarPrestamo_Click(object sender, EventArgs e)
         {
             txtIdPrestamo.Text = string.Empty;
-            ddlResponsable.SelectedIndex = 0;
+            txtResponsableCodigo.Text = string.Empty;
+            txtResponsableNombres.Text = string.Empty;
+            txtResponsableApellidos.Text = string.Empty;
+            txtResponsableCorreo.Text = string.Empty;
+            txtResponsableTelefono.Text = string.Empty;
+            txtResponsableRol.Text = string.Empty;
+            txtResponsableCargo.Text = string.Empty;
+            txtResponsableArea.Text = string.Empty;
             pnlInfoResponsable.Visible = false;
             txtFechaPrestamo.Text = DateTime.Today.ToString("yyyy-MM-dd");
             txtFechaPrevista.Text = DateTime.Today.AddDays(3).ToString("yyyy-MM-dd");
@@ -357,10 +323,20 @@ namespace LaboratorioSistema
                 }
 
                 txtIdPrestamo.Text = p.IdPrestamo.ToString();
-                if (ddlResponsable.Items.FindByValue(p.IdResponsable.ToString()) != null)
+                var responsable = _store.BuscarResponsablePorId(p.IdResponsable);
+                if (responsable != null)
                 {
-                    ddlResponsable.SelectedValue = p.IdResponsable.ToString();
-                    ActualizarInfoResponsable();
+                    txtResponsableCodigo.Text = responsable.IdResponsable.ToString();
+                    txtResponsableNombres.Text = responsable.Nombres;
+                    txtResponsableApellidos.Text = responsable.Apellidos;
+                    txtResponsableCorreo.Text = responsable.Correo;
+                    txtResponsableTelefono.Text = responsable.Telefono;
+                    txtResponsableRol.Text = responsable.TipoResponsable;
+                    txtResponsableArea.Text = responsable.CarreraDepartamento;
+                    pnlInfoResponsable.Visible = true;
+                    lblInfoResponsable.Text = string.Format("{0} {1} | Código: {2} | Área: {3} | Tel: {4} | Correo: {5}",
+                        responsable.Nombres, responsable.Apellidos, responsable.IdResponsable,
+                        responsable.CarreraDepartamento, responsable.Telefono, responsable.Correo);
                 }
                 txtFechaPrestamo.Text = p.FechaPrestamo.ToString("yyyy-MM-dd");
                 txtFechaPrevista.Text = p.FechaPrevistaDevolucion.ToString("yyyy-MM-dd");
@@ -402,6 +378,65 @@ namespace LaboratorioSistema
 
             gvPrestamos.DataSource = filas;
             gvPrestamos.DataBind();
+        }
+
+        private bool ObtenerResponsableDesdeFormulario(out int idResponsable, out string mensaje)
+        {
+            idResponsable = 0;
+            mensaje = string.Empty;
+            int codigo;
+
+            if (!int.TryParse(txtResponsableCodigo.Text.Trim(), out codigo) || codigo <= 0)
+            {
+                mensaje = "Ingrese un código de responsable válido.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtResponsableNombres.Text) ||
+                string.IsNullOrWhiteSpace(txtResponsableApellidos.Text) ||
+                string.IsNullOrWhiteSpace(txtResponsableCorreo.Text) ||
+                string.IsNullOrWhiteSpace(txtResponsableRol.Text) ||
+                string.IsNullOrWhiteSpace(txtResponsableCargo.Text) ||
+                string.IsNullOrWhiteSpace(txtResponsableArea.Text))
+            {
+                mensaje = "Complete todos los campos obligatorios del responsable.";
+                return false;
+            }
+
+            if (!txtResponsableCorreo.Text.Contains("@"))
+            {
+                mensaje = "Ingrese un correo válido para el responsable.";
+                return false;
+            }
+
+            Responsable responsable = new Responsable(
+                codigo,
+                txtResponsableNombres.Text.Trim(),
+                txtResponsableApellidos.Text.Trim(),
+                txtResponsableCorreo.Text.Trim(),
+                txtResponsableTelefono.Text.Trim(),
+                txtResponsableRol.Text.Trim(),
+                txtResponsableCargo.Text.Trim(),
+                txtResponsableArea.Text.Trim());
+
+            ResponsablesLogica logica = new ResponsablesLogica();
+            string resultado;
+            bool guardado = logica.Buscar(codigo) == null
+                ? logica.Registrar(responsable, out resultado)
+                : logica.Actualizar(responsable, out resultado);
+
+            if (!guardado)
+            {
+                mensaje = resultado;
+                return false;
+            }
+
+            idResponsable = codigo;
+            pnlInfoResponsable.Visible = true;
+            lblInfoResponsable.Text = string.Format("{0} {1} | Código: {2} | Área: {3} | Tel: {4} | Correo: {5}",
+                responsable.Nombre, responsable.Apellido, responsable.Codigo,
+                responsable.AreaAsignada, responsable.Telefono, responsable.Correo);
+            return true;
         }
     }
 }

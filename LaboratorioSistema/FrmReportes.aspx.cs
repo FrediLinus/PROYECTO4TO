@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -14,13 +13,14 @@ namespace LaboratorioSistema
         private readonly LaboratorioStore _store = new LaboratorioStore();
 
         [Serializable]
-        private class FilaReporte
+        public class FilaReporte
         {
             public DateTime Fecha { get; set; }
             public string Codigo { get; set; }
             public string Nombre { get; set; }
             public string Tipo { get; set; }
             public string Estado { get; set; }
+            public string Ubicacion { get; set; }
             public int Cantidad { get; set; }
             public string Responsable { get; set; }
             public string Descripcion { get; set; }
@@ -30,9 +30,16 @@ namespace LaboratorioSistema
         {
             if (!IsPostBack)
             {
-                txtFechaInicio.Text = DateTime.Today.AddMonths(-1).ToString("yyyy-MM-dd");
-                txtFechaFin.Text = DateTime.Today.ToString("yyyy-MM-dd");
+                txtFechaInicio.Text = string.Empty;
+                txtFechaFin.Text = string.Empty;
+                ddlTipoReporte.SelectedValue = "Inventario";
+                CargarReporte(false);
             }
+        }
+
+        protected void ddlTipoReporte_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CargarReporte(false);
         }
 
         protected void btnGenerarReporte_Click(object sender, EventArgs e)
@@ -42,15 +49,11 @@ namespace LaboratorioSistema
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            ddlTipoReporte.SelectedIndex = 0;
+            ddlTipoReporte.SelectedValue = "Inventario";
             ddlEstado.SelectedIndex = 0;
             txtFechaInicio.Text = string.Empty;
             txtFechaFin.Text = string.Empty;
-            txtResponsable.Text = string.Empty;
-            txtBuscar.Text = string.Empty;
-            gvReportes.DataSource = null;
-            gvReportes.DataBind();
-            lblTotalRegistros.Text = "Total de registros: 0";
+            CargarReporte(false);
             lblMensaje.Text = "Filtros limpiados.";
         }
 
@@ -63,31 +66,27 @@ namespace LaboratorioSistema
             }
 
             StringBuilder contenido = new StringBuilder();
-            contenido.AppendLine("Fecha\tCódigo\tNombre\tTipo\tEstado\tCantidad\tResponsable\tDescripción");
+            contenido.AppendLine(ObtenerTituloReporte());
+            contenido.AppendLine(new string('=', 100));
+            contenido.AppendLine("Fecha\tCódigo\tArtículo\tTipo\tCantidad\tEstado\tUbicación\tResponsable/Técnico\tDetalle");
             foreach (FilaReporte fila in filas)
             {
                 contenido.AppendLine(string.Join("\t",
                     Formatear(fila.Fecha), fila.Codigo, fila.Nombre, fila.Tipo,
-                    fila.Estado, fila.Cantidad.ToString(), fila.Responsable,
+                    fila.Cantidad.ToString(), fila.Estado, fila.Ubicacion, fila.Responsable,
                     fila.Descripcion));
             }
 
+            contenido.AppendLine(new string('-', 100));
+            contenido.AppendLine(string.Format("Total de registros: {0}", filas.Count));
+
             Response.Clear();
+            Response.ClearHeaders();
             Response.ContentType = "text/plain";
+            Response.ContentEncoding = Encoding.UTF8;
             Response.AddHeader("Content-Disposition", "attachment; filename=ReporteLaboratorio.txt");
             Response.Write(contenido.ToString());
-            HttpContext.Current.ApplicationInstance.CompleteRequest();
-        }
-
-        protected void btnImprimir_Click(object sender, EventArgs e)
-        {
-            if (!CargarReporte(false))
-            {
-                return;
-            }
-
-            ClientScript.RegisterStartupScript(
-                GetType(), "imprimirReporte", "window.print();", true);
+            Response.End();
         }
 
         protected void btnRegresar_Click(object sender, EventArgs e)
@@ -133,7 +132,7 @@ namespace LaboratorioSistema
             filas = filas.Where(f =>
                     (!desde.HasValue || f.Fecha.Date >= desde.Value.Date) &&
                     (!hasta.HasValue || f.Fecha.Date <= hasta.Value.Date))
-                .Where(CoincideConFiltros)
+                .Where(CoincideConFiltrosRestantes)
                 .OrderByDescending(f => f.Fecha)
                 .ToList();
             return true;
@@ -178,86 +177,105 @@ namespace LaboratorioSistema
             switch (tipoReporte)
             {
                 case "Inventario":
-                    return _store.ObtenerArticulos().Select(a => new FilaReporte
-                    {
-                        Fecha = a.FechaAdquisicion,
-                        Codigo = a.Codigo.ToString(),
-                        Nombre = a.Nombre,
-                        Tipo = a.GetType().Name,
-                        Estado = a.Estado,
-                        Cantidad = a.Cantidad,
-                        Descripcion = a.Descripcion
-                    }).ToList();
+                    return CrearFilasInventario();
 
-                case "Existencias":
-                    return _store.ObtenerArticulosConExistencia().Select(a => new FilaReporte
-                    {
-                        Fecha = DateTime.Today,
-                        Codigo = a.Codigo.ToString(),
-                        Nombre = a.Nombre,
-                        Tipo = a.Tipo,
-                        Estado = a.Estado,
-                        Cantidad = a.CantidadDisponible,
-                        Descripcion = string.Format("Disponibles: {0}; Mantenimiento: {1}; Dañados: {2}; Fuera de servicio: {3}",
-                            a.CantidadDisponible, a.CantidadEnMantenimiento, a.CantidadDanada, a.CantidadFueraServicio)
-                    }).ToList();
+                case "Utilizacion":
+                    return CrearFilasUtilizacion();
 
-                case "Prestamos":
-                    return _store.ObtenerPrestamos().Select(p => new FilaReporte
-                    {
-                        Fecha = p.FechaPrestamo,
-                        Codigo = p.IdPrestamo.ToString(),
-                        Nombre = "Préstamo",
-                        Tipo = "Préstamo",
-                        Estado = p.EstadoPrestamo.ToString(),
-                        Cantidad = p.ObtenerCantidadTotal(),
-                        Responsable = ObtenerResponsable(p.IdResponsable),
-                        Descripcion = p.Observaciones
-                    }).ToList();
-
-                case "Mantenimiento":
-                    return _store.ObtenerMantenimientos().Select(m => new FilaReporte
-                    {
-                        Fecha = m.FechaProgramada,
-                        Codigo = m.IdArticulo.ToString(),
-                        Nombre = "Mantenimiento #" + m.IdMantenimiento,
-                        Tipo = m.TipoMantenimiento.ToString(),
-                        Estado = m.EstadoMantenimiento.ToString(),
-                        Cantidad = m.Cantidad,
-                        Responsable = m.TecnicoResponsable,
-                        Descripcion = m.DescripcionProblema
-                    }).ToList();
-
-                case "Movimientos":
-                    return _store.ObtenerMovimientos().Select(m => new FilaReporte
-                    {
-                        Fecha = m.FechaHora,
-                        Codigo = m.IdArticulo.ToString(),
-                        Nombre = "Movimiento #" + m.IdMovimiento,
-                        Tipo = m.TipoMovimiento.ToString(),
-                        Estado = m.TipoMovimiento.ToString(),
-                        Cantidad = m.Cantidad,
-                        Descripcion = string.Format("{0} {1}", m.ReferenciaId, m.Descripcion).Trim()
-                    }).ToList();
-
-                case "Devoluciones":
-                    return new List<FilaReporte>();
+                case "MantenimientoPendiente":
+                    return CrearFilasMantenimientoPendiente();
 
                 default:
                     return new List<FilaReporte>();
             }
         }
 
-        private bool CoincideConFiltros(FilaReporte fila)
+        private List<FilaReporte> CrearFilasInventario()
         {
-            string buscar = (txtBuscar.Text ?? string.Empty).Trim();
-            string responsable = (txtResponsable.Text ?? string.Empty).Trim();
-            string estado = ddlEstado.SelectedValue ?? string.Empty;
-            string texto = string.Join(" ", fila.Codigo, fila.Nombre, fila.Tipo, fila.Estado, fila.Descripcion);
+            var inventario = _store.ObtenerArticulos().Select(a => new FilaReporte
+            {
+                Fecha = a.FechaAdquisicion,
+                Codigo = a.Codigo.ToString(),
+                Nombre = a.Nombre,
+                Tipo = a.GetType().Name,
+                Estado = a.Estado,
+                Cantidad = a.Cantidad,
+                Ubicacion = a.Ubicacion,
+                Descripcion = a.Descripcion
+            });
 
-            return (string.IsNullOrEmpty(buscar) || texto.IndexOf(buscar, StringComparison.OrdinalIgnoreCase) >= 0)
-                && (string.IsNullOrEmpty(responsable) || (fila.Responsable ?? string.Empty).IndexOf(responsable, StringComparison.OrdinalIgnoreCase) >= 0)
-                && (string.IsNullOrEmpty(estado) || fila.Estado.IndexOf(estado, StringComparison.OrdinalIgnoreCase) >= 0);
+            return inventario.ToList();
+        }
+
+        private List<FilaReporte> CrearFilasUtilizacion()
+        {
+            var nombresArticulos = _store.ObtenerArticulos()
+                .ToDictionary(a => a.Codigo, a => a.Nombre);
+
+            var prestamos = _store.ObtenerPrestamos().Select(p => new FilaReporte
+            {
+                Fecha = p.FechaPrestamo,
+                Codigo = p.IdPrestamo.ToString(),
+                Nombre = "Préstamo",
+                Tipo = "Préstamo",
+                Estado = p.EstadoPrestamo.ToString(),
+                Cantidad = p.ObtenerCantidadTotal(),
+                Responsable = ObtenerResponsable(p.IdResponsable),
+                Descripcion = p.Observaciones ?? string.Empty
+            });
+
+            var movimientos = _store.ObtenerMovimientos()
+                .Select(m => new FilaReporte
+                {
+                    Fecha = m.FechaHora,
+                    Codigo = m.IdArticulo.ToString(),
+                    Nombre = nombresArticulos.ContainsKey(m.IdArticulo)
+                        ? nombresArticulos[m.IdArticulo]
+                        : "Artículo " + m.IdArticulo,
+                    Tipo = m.TipoMovimiento.ToString(),
+                    Estado = m.TipoMovimiento.ToString(),
+                    Cantidad = m.Cantidad,
+                    Descripcion = string.Format("{0} {1}", m.ReferenciaId, m.Descripcion).Trim()
+                });
+
+            return prestamos.Concat(movimientos).ToList();
+        }
+
+        private List<FilaReporte> CrearFilasMantenimientoPendiente()
+        {
+            return _store.ObtenerMantenimientos()
+                .Where(m => m.EstadoMantenimiento != EstadoMantenimiento.Finalizado
+                    && m.EstadoMantenimiento != EstadoMantenimiento.Cancelado)
+                .Select(m => new FilaReporte
+            {
+                Fecha = m.FechaProgramada,
+                Codigo = m.IdArticulo.ToString(),
+                Nombre = "Mantenimiento #" + m.IdMantenimiento,
+                Tipo = m.TipoMantenimiento.ToString(),
+                Estado = m.EstadoMantenimiento.ToString(),
+                Cantidad = m.Cantidad,
+                Responsable = m.TecnicoResponsable,
+                Descripcion = m.DescripcionProblema
+            }).ToList();
+        }
+
+        private bool CoincideConFiltrosRestantes(FilaReporte fila)
+        {
+            string estado = ddlEstado.SelectedValue ?? string.Empty;
+
+            return string.IsNullOrEmpty(estado)
+                || fila.Estado.IndexOf(estado, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private string ObtenerTituloReporte()
+        {
+            switch (ddlTipoReporte.SelectedValue)
+            {
+                case "Inventario": return "REPORTE DE INVENTARIO";
+                case "Utilizacion": return "REPORTE DE UTILIZACIÓN DE EQUIPOS";
+                case "MantenimientoPendiente": return "REPORTE DE MANTENIMIENTO PENDIENTE";
+                default: return "REPORTE DEL LABORATORIO";
+            }
         }
 
         private string ObtenerResponsable(int idResponsable)

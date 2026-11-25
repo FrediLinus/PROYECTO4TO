@@ -16,5 +16,14 @@
     "Cantidad": 1,
     "ReferenciaId": "1",
     "Descripcion": "Inicio de mantenimiento"
+  },
+  {
+    "IdMovimiento": 3,
+    "FechaHora": "2026-11-25T01:39:37.9363491-06:00",
+    "IdArticulo": 2,
+    "TipoMovimiento": 2,
+    "Cantidad": 1,
+    "ReferenciaId": "1",
+    "Descripcion": "Préstamo registrado"
   }
 ]

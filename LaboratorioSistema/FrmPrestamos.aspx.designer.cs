@@ -50,14 +50,21 @@ namespace LaboratorioSistema
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtIdPrestamo;
 
-        /// <summary>
-        /// Control ddlResponsable.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlResponsable;
+        protected global::System.Web.UI.WebControls.TextBox txtResponsableCodigo;
+
+        protected global::System.Web.UI.WebControls.TextBox txtResponsableNombres;
+
+        protected global::System.Web.UI.WebControls.TextBox txtResponsableApellidos;
+
+        protected global::System.Web.UI.WebControls.TextBox txtResponsableCorreo;
+
+        protected global::System.Web.UI.WebControls.TextBox txtResponsableTelefono;
+
+        protected global::System.Web.UI.WebControls.TextBox txtResponsableRol;
+
+        protected global::System.Web.UI.WebControls.TextBox txtResponsableCargo;
+
+        protected global::System.Web.UI.WebControls.TextBox txtResponsableArea;
 
         /// <summary>
         /// Control txtFechaPrestamo.
