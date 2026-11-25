@@ -31,5 +31,37 @@ namespace LaboratorioSistema
             Ubicacion = "";
             FechaAdquisicion = DateTime.Now;
         }
+
+        public bool EsStockBajo()
+        {
+            return Cantidad <= CantidadMinima;
+        }
+
+        public bool EstaDisponible()
+        {
+            return string.IsNullOrWhiteSpace(Estado)
+                || Estado.Equals("Disponible", StringComparison.OrdinalIgnoreCase);
+        }
+
+        public void EstablecerExistencias(int cantidad)
+        {
+            if (cantidad < 0)
+            {
+                throw new ArgumentOutOfRangeException("cantidad", "La cantidad no puede ser negativa.");
+            }
+
+            Cantidad = cantidad;
+        }
+
+        public void AplicarVariacionExistencias(int variacion)
+        {
+            int nuevaCantidad = Cantidad + variacion;
+            if (nuevaCantidad < 0)
+            {
+                throw new InvalidOperationException("La variación dejaría las existencias en negativo.");
+            }
+
+            Cantidad = nuevaCantidad;
+        }
     }
 }

@@ -1,0 +1,16 @@
+[
+  {
+    "IdMantenimiento": 1,
+    "IdArticulo": 3,
+    "TipoMantenimiento": 0,
+    "Cantidad": 1,
+    "FechaProgramada": "2026-11-25T00:00:00",
+    "FechaInicio": "2026-11-25T00:00:00",
+    "FechaFinalizacion": null,
+    "TecnicoResponsable": "Miles Morales",
+    "EstadoMantenimiento": 1,
+    "DescripcionProblema": "Fuente de energia",
+    "DiagnosticoSolucion": null,
+    "Observaciones": "No enciende siempre"
+  }
+]

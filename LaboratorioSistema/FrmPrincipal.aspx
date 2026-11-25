@@ -63,12 +63,12 @@
                     <asp:Button ID="btnMovimientos" runat="server" Text="Ingresar a Movimientos" CssClass="btn-menu" PostBackUrl="~/FrmMovimientos.aspx" />
                 </div>
 
-                <!-- Módulo Responsables -->
+                <!-- Módulo Control existencias -->
                 <div class="menu-card">
                     <div class="card-icon">👥</div>
-                    <h3>Responsables</h3>
+                    <h3>Control de existencias</h3>
                     <p>Administración de estudiantes, docentes y técnicos autorizados.</p>
-                    <asp:Button ID="btnResponsables" runat="server" Text="Ingresar a Responsables" CssClass="btn-menu" PostBackUrl="~/FrmResponsables.aspx" />
+                    <asp:Button ID="btnResponsables" runat="server" Text="Ingresar a Control de existencias" CssClass="btn-menu" PostBackUrl="~/FrmResponsables.aspx" />
                 </div>
 
                 <!-- Módulo Reportes -->
@@ -85,6 +85,4 @@
     </form>
 </body>
 </html>
-    </form>
-</body>
-</html>
+    

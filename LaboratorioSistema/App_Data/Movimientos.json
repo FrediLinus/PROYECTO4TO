@@ -1,0 +1,20 @@
+[
+  {
+    "IdMovimiento": 1,
+    "FechaHora": "2026-11-25T00:07:39.9009969-06:00",
+    "IdArticulo": 2,
+    "TipoMovimiento": 1,
+    "Cantidad": 2,
+    "ReferenciaId": "",
+    "Descripcion": "Compra"
+  },
+  {
+    "IdMovimiento": 2,
+    "FechaHora": "2026-11-25T00:11:15.3399587-06:00",
+    "IdArticulo": 3,
+    "TipoMovimiento": 4,
+    "Cantidad": 1,
+    "ReferenciaId": "1",
+    "Descripcion": "Inicio de mantenimiento"
+  }
+]

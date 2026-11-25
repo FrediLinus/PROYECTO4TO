@@ -79,6 +79,14 @@ namespace LaboratorioSistema
     {
         public int IdArticulo { get; set; }
         public int CantidadPrestada { get; set; }
+
+        public void Validar()
+        {
+            if (IdArticulo <= 0 || CantidadPrestada <= 0)
+            {
+                throw new InvalidOperationException("El detalle del préstamo no es válido.");
+            }
+        }
     }
 
     public class Prestamo
@@ -90,6 +98,24 @@ namespace LaboratorioSistema
         public EstadoPrestamo EstadoPrestamo { get; set; }
         public string Observaciones { get; set; }
         public List<DetallePrestamo> Detalles { get; set; }
+
+        public int ObtenerCantidadTotal()
+        {
+            return (Detalles ?? new List<DetallePrestamo>()).Sum(d => d.CantidadPrestada);
+        }
+
+        public void ValidarDetalles()
+        {
+            if (Detalles == null || Detalles.Count == 0)
+            {
+                throw new InvalidOperationException("El préstamo debe contener al menos un detalle.");
+            }
+
+            foreach (DetallePrestamo detalle in Detalles)
+            {
+                detalle.Validar();
+            }
+        }
     }
 
     public class Mantenimiento
@@ -106,6 +132,46 @@ namespace LaboratorioSistema
         public string DescripcionProblema { get; set; }
         public string DiagnosticoSolucion { get; set; }
         public string Observaciones { get; set; }
+
+        public void Iniciar(DateTime fechaInicio, string tecnico)
+        {
+            if (EstadoMantenimiento != EstadoMantenimiento.Pendiente)
+            {
+                throw new InvalidOperationException("El mantenimiento no está pendiente.");
+            }
+
+            FechaInicio = fechaInicio;
+            if (!string.IsNullOrWhiteSpace(tecnico))
+            {
+                TecnicoResponsable = tecnico.Trim();
+            }
+            EstadoMantenimiento = EstadoMantenimiento.EnProceso;
+        }
+
+        public void Finalizar(DateTime fechaFinalizacion, string diagnostico,
+                              string observaciones)
+        {
+            if (EstadoMantenimiento != EstadoMantenimiento.EnProceso)
+            {
+                throw new InvalidOperationException("El mantenimiento no está en proceso.");
+            }
+
+            FechaFinalizacion = fechaFinalizacion;
+            DiagnosticoSolucion = diagnostico ?? string.Empty;
+            Observaciones = observaciones ?? string.Empty;
+            EstadoMantenimiento = EstadoMantenimiento.Finalizado;
+        }
+
+        public void Cancelar(string observaciones)
+        {
+            if (EstadoMantenimiento == EstadoMantenimiento.Finalizado)
+            {
+                throw new InvalidOperationException("Un mantenimiento finalizado no se puede cancelar.");
+            }
+
+            EstadoMantenimiento = EstadoMantenimiento.Cancelado;
+            Observaciones = observaciones ?? string.Empty;
+        }
     }
 
     public class Movimiento
@@ -117,6 +183,14 @@ namespace LaboratorioSistema
         public int Cantidad { get; set; }
         public string ReferenciaId { get; set; }
         public string Descripcion { get; set; }
+
+        public bool EsTrazabilidadAutomatica()
+        {
+            return TipoMovimiento == TipoMovimiento.Prestamo
+                || TipoMovimiento == TipoMovimiento.Devolucion
+                || TipoMovimiento == TipoMovimiento.InicioMantenimiento
+                || TipoMovimiento == TipoMovimiento.FinalizacionMantenimiento;
+        }
     }
 
     public class LaboratorioStore
@@ -160,6 +234,11 @@ namespace LaboratorioSistema
             return ObtenerTodosResponsables().FirstOrDefault(r => r.IdResponsable == id);
         }
 
+        public List<Articulo> ObtenerArticulos()
+        {
+            return ArchivoManager.CargarArticulos();
+        }
+
         public List<ArticuloConExistencia> ObtenerArticulosConExistencia()
         {
             var mantenimientos = Leer<Mantenimiento>(_rutaMantenimientos);
@@ -188,6 +267,12 @@ namespace LaboratorioSistema
             if (BuscarResponsablePorId(idResponsable) == null)
                 throw new InvalidOperationException("El responsable no existe.");
 
+            if (fechaPrevista.Date < fechaPrestamo.Date)
+                throw new InvalidOperationException("La fecha prevista de devolución no puede ser anterior a la fecha del préstamo.");
+
+            if (items == null || items.Count == 0)
+                throw new InvalidOperationException("El préstamo debe contener al menos un artículo.");
+
             var articulos = ArchivoManager.CargarArticulos();
             var detalles = new List<DetallePrestamo>();
             foreach (var item in items)
@@ -195,9 +280,9 @@ namespace LaboratorioSistema
                 var articulo = articulos.FirstOrDefault(a => a.Codigo == item.Item1);
                 if (articulo == null || item.Item2 <= 0 || articulo.Cantidad < item.Item2)
                     throw new InvalidOperationException("No hay existencias suficientes para uno de los artículos.");
-                if (!EsDisponible(articulo.Estado))
+                if (!articulo.EstaDisponible())
                     throw new InvalidOperationException("Uno de los artículos no está disponible.");
-                articulo.Cantidad -= item.Item2;
+                articulo.AplicarVariacionExistencias(-item.Item2);
                 detalles.Add(new DetallePrestamo { IdArticulo = item.Item1, CantidadPrestada = item.Item2 });
             }
 
@@ -212,6 +297,7 @@ namespace LaboratorioSistema
                 Observaciones = observaciones ?? string.Empty,
                 Detalles = detalles
             };
+            prestamo.ValidarDetalles();
             prestamos.Add(prestamo);
             ArchivoManager.GuardarArticulos(articulos);
             Guardar(_rutaPrestamos, prestamos);
@@ -230,7 +316,7 @@ namespace LaboratorioSistema
             foreach (var detalle in prestamo.Detalles ?? new List<DetallePrestamo>())
             {
                 var articulo = articulos.FirstOrDefault(a => a.Codigo == detalle.IdArticulo);
-                if (articulo != null) articulo.Cantidad += detalle.CantidadPrestada;
+                if (articulo != null) articulo.AplicarVariacionExistencias(detalle.CantidadPrestada);
             }
             prestamo.EstadoPrestamo = EstadoPrestamo.Cancelado;
             ArchivoManager.GuardarArticulos(articulos);
@@ -252,7 +338,7 @@ namespace LaboratorioSistema
             if (cantidad <= 0) throw new InvalidOperationException("La cantidad debe ser mayor que cero.");
             var articulo = ArchivoManager.CargarArticulos().FirstOrDefault(a => a.Codigo == idArticulo);
             if (articulo == null) throw new InvalidOperationException("El artículo no existe.");
-            if (articulo.Cantidad < cantidad || !EsDisponible(articulo.Estado)) throw new InvalidOperationException("No hay existencias disponibles suficientes.");
+            if (articulo.Cantidad < cantidad || !articulo.EstaDisponible()) throw new InvalidOperationException("No hay existencias disponibles suficientes.");
 
             var lista = ObtenerMantenimientos();
             var mantenimiento = new Mantenimiento
@@ -276,10 +362,7 @@ namespace LaboratorioSistema
         {
             var lista = ObtenerMantenimientos();
             var mantenimiento = ObtenerMantenimiento(lista, idMantenimiento);
-            if (mantenimiento.EstadoMantenimiento != EstadoMantenimiento.Pendiente) throw new InvalidOperationException("El mantenimiento no está pendiente.");
-            mantenimiento.FechaInicio = fechaInicio;
-            mantenimiento.TecnicoResponsable = string.IsNullOrWhiteSpace(tecnico) ? mantenimiento.TecnicoResponsable : tecnico;
-            mantenimiento.EstadoMantenimiento = EstadoMantenimiento.EnProceso;
+            mantenimiento.Iniciar(fechaInicio, tecnico);
             Guardar(_rutaMantenimientos, lista);
             RegistrarMovimientoInterno(TipoMovimiento.InicioMantenimiento, mantenimiento.Cantidad, idMantenimiento.ToString(), "Inicio de mantenimiento", new[] { mantenimiento.IdArticulo });
         }
@@ -288,15 +371,11 @@ namespace LaboratorioSistema
         {
             var lista = ObtenerMantenimientos();
             var mantenimiento = ObtenerMantenimiento(lista, idMantenimiento);
-            if (mantenimiento.EstadoMantenimiento != EstadoMantenimiento.EnProceso) throw new InvalidOperationException("El mantenimiento no está en proceso.");
             var articulos = ArchivoManager.CargarArticulos();
             var articulo = articulos.FirstOrDefault(a => a.Codigo == mantenimiento.IdArticulo);
             if (articulo == null) throw new InvalidOperationException("El artículo no existe.");
             articulo.Estado = EstadoTexto(estadoFinal);
-            mantenimiento.FechaFinalizacion = fechaFin;
-            mantenimiento.DiagnosticoSolucion = diagnostico ?? string.Empty;
-            mantenimiento.Observaciones = observaciones ?? string.Empty;
-            mantenimiento.EstadoMantenimiento = EstadoMantenimiento.Finalizado;
+            mantenimiento.Finalizar(fechaFin, diagnostico, observaciones);
             Guardar(_rutaMantenimientos, lista);
             ArchivoManager.GuardarArticulos(articulos);
             RegistrarMovimientoInterno(TipoMovimiento.FinalizacionMantenimiento, mantenimiento.Cantidad, idMantenimiento.ToString(), "Finalización de mantenimiento", new[] { mantenimiento.IdArticulo });
@@ -306,8 +385,7 @@ namespace LaboratorioSistema
         {
             var lista = ObtenerMantenimientos();
             var mantenimiento = ObtenerMantenimiento(lista, idMantenimiento);
-            mantenimiento.EstadoMantenimiento = EstadoMantenimiento.Cancelado;
-            mantenimiento.Observaciones = observaciones ?? string.Empty;
+            mantenimiento.Cancelar(observaciones);
             Guardar(_rutaMantenimientos, lista);
         }
 
@@ -325,11 +403,11 @@ namespace LaboratorioSistema
             if (tipo == TipoMovimiento.Salida || tipo == TipoMovimiento.Baja)
             {
                 if (articulo.Cantidad < cantidad) throw new InvalidOperationException("No hay existencias suficientes.");
-                articulo.Cantidad -= cantidad;
+                articulo.AplicarVariacionExistencias(-cantidad);
             }
             else if (tipo == TipoMovimiento.Entrada)
             {
-                articulo.Cantidad += cantidad;
+                articulo.AplicarVariacionExistencias(cantidad);
             }
             ArchivoManager.GuardarArticulos(articulos);
             return RegistrarMovimientoInterno(tipo, cantidad, referencia, descripcion, new[] { idArticulo });
@@ -378,11 +456,6 @@ namespace LaboratorioSistema
                 CantidadDanada = estado == EstadoArticulo.Danado ? articulo.Cantidad : 0,
                 CantidadFueraServicio = estado == EstadoArticulo.FueraDeServicio ? articulo.Cantidad : 0
             };
-        }
-
-        private static bool EsDisponible(string estado)
-        {
-            return string.IsNullOrWhiteSpace(estado) || estado.Equals("Disponible", StringComparison.OrdinalIgnoreCase);
         }
 
         private static string EstadoTexto(EstadoArticulo estado)

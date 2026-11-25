@@ -15,7 +15,7 @@
             <a href="FrmPrestamos.aspx">Préstamos</a>
             <a href="FrmMantenimiento.aspx">Mantenimiento</a>
             <a href="FrmMovimientos.aspx">Movimientos</a>
-            <a href="FrmResponsables.aspx">Responsables</a>
+            <a href="FrmResponsables.aspx">Control de existencias</a>
             <a href="FrmReportes.aspx">Reportes</a>
         </nav>
 

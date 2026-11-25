@@ -148,9 +148,7 @@ namespace LaboratorioSistema
         // CONSULTAR STOCK BAJO
         public List<Articulo> ObtenerStockBajo()
         {
-            return articulos
-                .Where(a => a.Cantidad <= a.CantidadMinima)
-                .ToList();
+            return articulos.Where(a => a.EsStockBajo()).ToList();
         }
 
         // MODIFICAR EXISTENCIAS
@@ -171,7 +169,7 @@ namespace LaboratorioSistema
                 return false;
             }
 
-            articulo.Cantidad = cantidad;
+            articulo.EstablecerExistencias(cantidad);
 
             ArchivoManager.GuardarArticulos(articulos);
 

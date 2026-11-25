@@ -16,7 +16,7 @@
             <a href="FrmPrestamos.aspx">Préstamos</a>
             <a href="FrmMantenimiento.aspx">Mantenimiento</a>
             <a href="FrmMovimientos.aspx">Movimientos</a>
-            <a href="FrmResponsables.aspx">Responsables</a>
+            <a href="FrmResponsables.aspx">Control de existencias</a>
             <a href="FrmReportes.aspx">Reportes</a>
         </nav>
         <div class="app-wrapper">
@@ -101,19 +101,19 @@
 
                     <asp:Button ID="btnGenerarReporte" runat="server"
                         Text="Generar Reporte"
-                        CssClass="btn btn-primary" />
+                        CssClass="btn btn-primary" OnClick="btnGenerarReporte_Click" />
 
                     <asp:Button ID="btnLimpiar" runat="server"
                         Text="Limpiar Filtros"
-                        CssClass="btn btn-secondary" />
+                        CssClass="btn btn-secondary" OnClick="btnLimpiar_Click" />
 
                     <asp:Button ID="btnExportar" runat="server"
                         Text="Exportar Reporte"
-                        CssClass="btn btn-success" />
+                        CssClass="btn btn-success" OnClick="btnExportar_Click" />
 
                     <asp:Button ID="btnImprimir" runat="server"
                         Text="Imprimir Reporte"
-                        CssClass="btn btn-warning" />
+                        CssClass="btn btn-warning" OnClick="btnImprimir_Click" />
 
                 </div>
 
@@ -150,7 +150,7 @@
 
                     <asp:Button ID="btnRegresar" runat="server"
                         Text="Regresar al menú principal"
-                        CssClass="btn btn-secondary" />
+                        CssClass="btn btn-secondary" OnClick="btnRegresar_Click" />
 
                 </div>
 
