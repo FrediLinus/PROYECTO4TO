@@ -28,17 +28,17 @@
     "FechaAdquisicion": "2026-11-25T00:00:00"
   },
   {
-    "$type": "LaboratorioSistema.Equipo, LaboratorioSistema",
-    "Marca": "LG",
-    "Modelo": "LG-333",
-    "NumeroSerie": "38734",
-    "Codigo": 3,
-    "Nombre": "Monitores",
-    "Descripcion": "",
-    "Cantidad": 5,
-    "CantidadMinima": 5,
+    "$type": "LaboratorioSistema.ComponenteElectronico, LaboratorioSistema",
+    "TipoComponente": "HP",
+    "Valor": "2026",
+    "Unidad": "23",
+    "Codigo": 5,
+    "Nombre": "Laptop",
+    "Descripcion": "eje",
+    "Cantidad": 1,
+    "CantidadMinima": 1,
     "Estado": "Disponible",
-    "Ubicacion": "Bodega",
-    "FechaAdquisicion": "2026-11-25T00:00:00"
+    "Ubicacion": "Laboratorio de informática",
+    "FechaAdquisicion": "2026-11-14T00:00:00"
   }
 ]

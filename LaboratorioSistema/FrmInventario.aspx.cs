@@ -22,17 +22,13 @@ namespace LaboratorioSistema
             string texto = (filtro ?? "").Trim();
 
             var lista = logica.ObtenerArticulos()
-                .Where(a => string.IsNullOrEmpty(texto)
-                    || a.Codigo.ToString().Contains(texto)
-                    || (a.Nombre ?? "").IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (a is Equipo && (((Equipo)a).NumeroSerie ?? "")
-                        .IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0))
+                .Where(a => CoincideConFiltro(a, texto))
                 .Select(a => new
                 {
                     IdArticulo = a.Codigo,
                     Nombre = a.Nombre,
                     Tipo = ObtenerTipo(a),
-                    Marca = a is Equipo ? ((Equipo)a).Marca : "",
+                    Marca = ObtenerMarca(a),
                     Cantidad = a.Cantidad,
                     Estado = a.Estado,
                     Ubicacion = a.Ubicacion
@@ -49,6 +45,66 @@ namespace LaboratorioSistema
             if (articulo is InstrumentoMedicion) return "Instrumento de medición";
             if (articulo is ComponenteElectronico) return "Componente electrónico";
             return "Otro";
+        }
+
+        private string ObtenerMarca(Articulo articulo)
+        {
+            Equipo equipo = articulo as Equipo;
+            if (equipo != null) return equipo.Marca;
+
+            Herramienta herramienta = articulo as Herramienta;
+            if (herramienta != null) return herramienta.TipoHerramienta;
+
+            InstrumentoMedicion instrumento = articulo as InstrumentoMedicion;
+            if (instrumento != null) return instrumento.TipoInstrumento;
+
+            ComponenteElectronico componente = articulo as ComponenteElectronico;
+            if (componente != null) return componente.TipoComponente;
+
+            return "";
+        }
+
+        private bool CoincideConFiltro(Articulo articulo, string filtro)
+        {
+            if (string.IsNullOrEmpty(filtro))
+            {
+                return true;
+            }
+
+            string datos = string.Join(" ",
+                articulo.Codigo.ToString(),
+                articulo.Nombre,
+                ObtenerTipo(articulo),
+                ObtenerMarca(articulo),
+                articulo.Descripcion,
+                articulo.Estado,
+                articulo.Ubicacion);
+
+            Equipo equipo = articulo as Equipo;
+            if (equipo != null)
+            {
+                datos += " " + equipo.Modelo + " " + equipo.NumeroSerie;
+            }
+
+            Herramienta herramienta = articulo as Herramienta;
+            if (herramienta != null)
+            {
+                datos += " " + herramienta.Material;
+            }
+
+            InstrumentoMedicion instrumento = articulo as InstrumentoMedicion;
+            if (instrumento != null)
+            {
+                datos += " " + instrumento.RangoMedicion + " " + instrumento.UnidadMedicion;
+            }
+
+            ComponenteElectronico componente = articulo as ComponenteElectronico;
+            if (componente != null)
+            {
+                datos += " " + componente.Valor + " " + componente.Unidad;
+            }
+
+            return datos.IndexOf(filtro, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void PrepararNuevo()
@@ -140,6 +196,31 @@ namespace LaboratorioSistema
         protected void btnBuscarArticulo_Click(object sender, EventArgs e)
         {
             CargarInventario(txtBuscar.Text);
+        }
+
+        protected void gvInventario_RowCommand(
+            object sender,
+            System.Web.UI.WebControls.GridViewCommandEventArgs e)
+        {
+            if (e.CommandName != "EliminarArticulo")
+            {
+                return;
+            }
+
+            int indice = Convert.ToInt32(e.CommandArgument);
+            int codigo = Convert.ToInt32(gvInventario.DataKeys[indice].Value);
+
+            InventarioLogica logica = new InventarioLogica();
+            string mensaje;
+            bool resultado = logica.EliminarArticulo(codigo, out mensaje);
+
+            lblMensaje.Text = mensaje;
+            CargarInventario(txtBuscar.Text);
+
+            if (resultado && txtIdArticulo.Text == codigo.ToString())
+            {
+                PrepararNuevo();
+            }
         }
 
         protected void btnLimpiar_Click(object sender, EventArgs e)

@@ -249,7 +249,9 @@
                         AutoGenerateColumns="False"
                         GridLines="None"
                         EmptyDataText="No hay artículos registrados."
-                        Width="100%">
+                        Width="100%"
+                        DataKeyNames="IdArticulo"
+                        OnRowCommand="gvInventario_RowCommand">
 
                         <Columns>
 
@@ -280,6 +282,12 @@
                             <asp:BoundField
                                 DataField="Ubicacion"
                                 HeaderText="Ubicación" />
+
+                            <asp:ButtonField
+                                ButtonType="Button"
+                                CommandName="EliminarArticulo"
+                                HeaderText="Acciones"
+                                Text="Eliminar" />
 
                         </Columns>
 
