@@ -198,11 +198,6 @@
                         CssClass="btn btn-danger"
                         OnClick="btnEliminar_Click" />
 
-                    <asp:Button ID="btnBuscar" runat="server"
-                        Text="Buscar"
-                        CssClass="btn btn-primary"
-                        OnClick="btnBuscar_Click" />
-
                     <asp:Button ID="btnLimpiar" runat="server"
                         Text="Limpiar"
                         CssClass="btn btn-secondary"
