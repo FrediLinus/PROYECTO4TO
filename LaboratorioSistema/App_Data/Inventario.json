@@ -29,7 +29,7 @@
   },
   {
     "$type": "LaboratorioSistema.ComponenteElectronico, LaboratorioSistema",
-    "TipoComponente": "HP",
+    "TipoComponente": "Lenovo",
     "Valor": "2026",
     "Unidad": "23",
     "Codigo": 5,

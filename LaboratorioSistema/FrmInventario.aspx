@@ -179,9 +179,10 @@
                 <!-- BOTONES -->
                 <div class="button-group">
 
-                    <asp:Button ID="btnNuevo" runat="server"
-                        Text="+ Nuevo"
-                        CssClass="btn btn-secondary" OnClick="btnNuevo_Click" />
+                    <asp:Button ID="btnBuscar" runat="server"
+                        Text="Buscar por ID"
+                        CssClass="btn btn-primary"
+                        OnClick="btnBuscar_Click" />
 
                     <asp:Button ID="btnGuardar" runat="server"
                           Text="Guardar"

@@ -11,7 +11,7 @@ namespace LaboratorioSistema
         {
             if (!IsPostBack)
             {
-                PrepararNuevo();
+                LimpiarFormulario();
                 CargarInventario();
             }
         }
@@ -107,25 +107,6 @@ namespace LaboratorioSistema
             return datos.IndexOf(filtro, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        private void PrepararNuevo()
-        {
-            InventarioLogica logica = new InventarioLogica();
-            var articulos = logica.ObtenerArticulos();
-            int nuevoCodigo = articulos.Count > 0 ? articulos.Max(a => a.Codigo) + 1 : 1;
-
-            LimpiarFormulario();
-            txtIdArticulo.Text = nuevoCodigo.ToString();
-            txtCantidad.Text = "1";
-            txtFechaAdquisicion.Text = DateTime.Today.ToString("yyyy-MM-dd");
-            txtStockMinimo.Text = "1";
-        }
-
-        protected void btnNuevo_Click(object sender, EventArgs e)
-        {
-            PrepararNuevo();
-            lblMensaje.Text = "Nuevo artículo listo para registrar.";
-        }
-
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
             string mensaje;
@@ -143,7 +124,7 @@ namespace LaboratorioSistema
             if (resultado)
             {
                 CargarInventario();
-                PrepararNuevo();
+                LimpiarFormulario();
             }
         }
 
@@ -183,7 +164,7 @@ namespace LaboratorioSistema
 
             if (resultado)
             {
-                PrepararNuevo();
+                LimpiarFormulario();
                 CargarInventario();
             }
         }
@@ -219,13 +200,13 @@ namespace LaboratorioSistema
 
             if (resultado && txtIdArticulo.Text == codigo.ToString())
             {
-                PrepararNuevo();
+                LimpiarFormulario();
             }
         }
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            PrepararNuevo();
+            LimpiarFormulario();
             lblMensaje.Text = "Formulario limpiado.";
         }
 
