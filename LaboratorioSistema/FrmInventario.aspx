@@ -7,7 +7,7 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Gestión de Inventario</title>
-    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link href="styles.css?v=20260324" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="app-body">
@@ -48,7 +48,7 @@
                         <label>ID del artículo</label>
                         <asp:TextBox ID="txtIdArticulo" runat="server"
                             CssClass="form-control"
-                            placeholder="Generado automáticamente">
+                            placeholder="Ingrese el ID del artículo">
                         </asp:TextBox>
                     </div>
 
@@ -295,6 +295,21 @@
 
         </div>
 
+        <div id="modalArticuloNoEncontrado" class="modal-articulo" role="dialog" aria-modal="true" aria-labelledby="tituloModalArticulo">
+            <div class="modal-articulo-contenido">
+                <h2 id="tituloModalArticulo">Artículo no encontrado</h2>
+                <p id="mensajeModalArticulo">El artículo no aparece en el sistema.</p>
+                <button type="button" class="modal-articulo-cerrar" onclick="cerrarModalArticulo()">Aceptar</button>
+            </div>
+        </div>
+        <script type="text/javascript">
+            function mostrarModalArticulo() {
+                document.getElementById('modalArticuloNoEncontrado').classList.add('visible');
+            }
+            function cerrarModalArticulo() {
+                document.getElementById('modalArticuloNoEncontrado').classList.remove('visible');
+            }
+        </script>
     </form>
 
 </body>

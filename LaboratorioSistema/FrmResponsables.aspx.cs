@@ -63,6 +63,19 @@ namespace LaboratorioSistema
 
             ActualizarResumen(articulos);
             lblMensaje.Text = string.Format("{0} artículo(s) encontrado(s).", resultado.Count);
+
+            if (!string.IsNullOrWhiteSpace(texto) && resultado.Count == 0)
+            {
+                MostrarModalArticulo("El artículo buscado no aparece en el sistema.");
+            }
+        }
+
+        private void MostrarModalArticulo(string mensaje)
+        {
+            string script = "document.getElementById('mensajeModalArticulo').innerText = '" +
+                mensaje.Replace("'", "\\'") +
+                "'; mostrarModalArticulo();";
+            ClientScript.RegisterStartupScript(GetType(), "modalArticulo", script, true);
         }
 
         private void ActualizarResumen(System.Collections.Generic.List<ArticuloConExistencia> articulos)

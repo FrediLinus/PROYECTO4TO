@@ -38,6 +38,14 @@ namespace LaboratorioSistema
             lblMensaje.Text = string.Empty;
         }
 
+        private void MostrarModalArticulo(string mensaje)
+        {
+            string script = "document.getElementById('mensajeModalArticulo').innerText = '" +
+                mensaje.Replace("'", "\\'") +
+                "'; mostrarModalArticulo();";
+            ClientScript.RegisterStartupScript(GetType(), "modalArticulo", script, true);
+        }
+
         private void CargarArticulos()
         {
             string previo = ddlArticuloMov.SelectedValue;
@@ -64,9 +72,22 @@ namespace LaboratorioSistema
         {
             try
             {
+                if (!int.TryParse(txtIdMovimiento.Text.Trim(), out int idMovimiento) || idMovimiento <= 0)
+                {
+                    MostrarMensaje("Ingrese un ID de movimiento válido.", "advertencia");
+                    return;
+                }
+
                 if (!int.TryParse(ddlArticuloMov.SelectedValue, out int idArticulo))
                 {
                     MostrarMensaje("Seleccione un artículo para el movimiento.", "advertencia");
+                    MostrarModalArticulo("El artículo seleccionado no aparece en el sistema.");
+                    return;
+                }
+
+                if (_store.BuscarArticuloConExistencia(idArticulo) == null)
+                {
+                    MostrarModalArticulo("El artículo seleccionado no aparece en el sistema.");
                     return;
                 }
 
@@ -84,6 +105,7 @@ namespace LaboratorioSistema
 
                 var tipo = (TipoMovimiento)Enum.Parse(typeof(TipoMovimiento), ddlTipoMovimiento.SelectedValue);
                 var mov = _store.RegistrarMovimientoManual(
+                    idMovimiento,
                     idArticulo,
                     tipo,
                     cantidad,

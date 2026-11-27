@@ -139,11 +139,18 @@ namespace LaboratorioSistema
             }
 
             InventarioLogica logica = new InventarioLogica();
-            bool resultado = logica.ActualizarArticulo(articulo, out mensaje);
+            int codigoOriginal = articulo.Codigo;
+            if (ViewState["CodigoOriginal"] != null)
+            {
+                codigoOriginal = (int)ViewState["CodigoOriginal"];
+            }
+
+            bool resultado = logica.ActualizarArticulo(articulo, codigoOriginal, out mensaje);
             lblMensaje.Text = mensaje;
 
             if (resultado)
             {
+                ViewState["CodigoOriginal"] = articulo.Codigo;
                 CargarInventario();
             }
         }
@@ -176,7 +183,13 @@ namespace LaboratorioSistema
 
         protected void btnBuscarArticulo_Click(object sender, EventArgs e)
         {
-            CargarInventario(txtBuscar.Text);
+            string filtro = txtBuscar.Text.Trim();
+            CargarInventario(filtro);
+
+            if (!string.IsNullOrEmpty(filtro) && !InventarioCoincide(filtro))
+            {
+                MostrarModalArticulo("El artículo buscado no aparece en el sistema.");
+            }
         }
 
         protected void gvInventario_RowCommand(
@@ -230,10 +243,12 @@ namespace LaboratorioSistema
             if (articulo == null)
             {
                 lblMensaje.Text = "No se encontró un artículo con ese ID.";
+                MostrarModalArticulo("El artículo con ID " + codigo + " no aparece en el sistema.");
                 return;
             }
 
             CargarArticuloEnFormulario(articulo);
+            ViewState["CodigoOriginal"] = articulo.Codigo;
             lblMensaje.Text = "Artículo encontrado.";
         }
 
@@ -325,6 +340,7 @@ namespace LaboratorioSistema
         private void CargarArticuloEnFormulario(Articulo articulo)
         {
             txtIdArticulo.Text = articulo.Codigo.ToString();
+            ViewState["CodigoOriginal"] = articulo.Codigo;
             txtNombre.Text = articulo.Nombre;
             ddlTipo.SelectedValue = ObtenerTipo(articulo);
             txtDescripcion.Text = articulo.Descripcion;
@@ -365,6 +381,7 @@ namespace LaboratorioSistema
 
         private void LimpiarFormulario()
         {
+            ViewState.Remove("CodigoOriginal");
             txtIdArticulo.Text = "";
             txtNombre.Text = "";
             ddlTipo.SelectedIndex = 0;
@@ -377,6 +394,20 @@ namespace LaboratorioSistema
             ddlUbicacion.SelectedIndex = 0;
             txtFechaAdquisicion.Text = "";
             txtStockMinimo.Text = "";
+        }
+
+        private bool InventarioCoincide(string filtro)
+        {
+            InventarioLogica logica = new InventarioLogica();
+            return logica.ObtenerArticulos().Any(a => CoincideConFiltro(a, filtro));
+        }
+
+        private void MostrarModalArticulo(string mensaje)
+        {
+            string script = "document.getElementById('mensajeModalArticulo').innerText = '" +
+                mensaje.Replace("'", "\\'") +
+                "'; mostrarModalArticulo();";
+            ClientScript.RegisterStartupScript(GetType(), "modalArticulo", script, true);
         }
     }
 }

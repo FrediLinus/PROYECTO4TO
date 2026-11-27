@@ -65,6 +65,14 @@ namespace LaboratorioSistema
             lblMensaje.Text = string.Empty;
         }
 
+        private void MostrarModalArticulo(string mensaje)
+        {
+            string script = "document.getElementById('mensajeModalArticulo').innerText = '" +
+                mensaje.Replace("'", "\\'") +
+                "'; mostrarModalArticulo();";
+            ClientScript.RegisterStartupScript(GetType(), "modalArticulo", script, true);
+        }
+
         private void CargarCombos()
         {
             string artPrevio = ddlArticulo.SelectedValue;
@@ -105,6 +113,12 @@ namespace LaboratorioSistema
             }
 
             var item = _store.BuscarArticuloConExistencia(idArt);
+            if (item == null)
+            {
+                MostrarModalArticulo("El artículo seleccionado no aparece en el sistema.");
+                return;
+            }
+
             if (item != null)
             {
                 txtCodigoArticulo.Text = item.Codigo.ToString();
@@ -134,6 +148,7 @@ namespace LaboratorioSistema
                 if (item == null)
                 {
                     MostrarMensaje("El artículo seleccionado no existe.", "error");
+                    MostrarModalArticulo("El artículo seleccionado no aparece en el sistema.");
                     return;
                 }
 
@@ -203,6 +218,12 @@ namespace LaboratorioSistema
         {
             try
             {
+                if (!int.TryParse(txtIdPrestamo.Text.Trim(), out int idPrestamo) || idPrestamo <= 0)
+                {
+                    MostrarMensaje("Ingrese un ID de préstamo válido.", "advertencia");
+                    return;
+                }
+
                 string mensajeResponsable;
                 int idResponsable;
                 if (!ObtenerResponsableDesdeFormulario(out idResponsable, out mensajeResponsable))
@@ -232,6 +253,7 @@ namespace LaboratorioSistema
 
                 var items = DetallesTemporales.Select(d => new Tuple<int, int>(d.IdArticulo, d.CantidadSolicitada)).ToList();
                 var prestamo = _store.RegistrarPrestamo(
+                    idPrestamo,
                     idResponsable,
                     fechaPrestamo,
                     fechaPrevista,

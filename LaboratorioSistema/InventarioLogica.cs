@@ -81,6 +81,11 @@ namespace LaboratorioSistema
         // ACTUALIZAR ARTÍCULO
         public bool ActualizarArticulo(Articulo articulo, out string mensaje)
         {
+            return ActualizarArticulo(articulo, articulo == null ? 0 : articulo.Codigo, out mensaje);
+        }
+
+        public bool ActualizarArticulo(Articulo articulo, int codigoOriginal, out string mensaje)
+        {
             if (articulo == null)
             {
                 mensaje = "El artículo no puede ser nulo.";
@@ -111,12 +116,17 @@ namespace LaboratorioSistema
                 return false;
             }
 
-            int indice = articulos.FindIndex(
-                a => a.Codigo == articulo.Codigo);
+            int indice = articulos.FindIndex(a => a.Codigo == codigoOriginal);
 
             if (indice == -1)
             {
                 mensaje = "El artículo no existe.";
+                return false;
+            }
+
+            if (articulos.Any(a => a.Codigo == articulo.Codigo && a.Codigo != codigoOriginal))
+            {
+                mensaje = "No se permiten dos artículos con el mismo ID, sin importar el tipo de artículo.";
                 return false;
             }
 

@@ -7,7 +7,7 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Inicio de sesión</title>
-    <link href="styles.css" rel="stylesheet" />
+    <link href="styles.css?v=20260324" rel="stylesheet" />
 </head>
 <body>
 

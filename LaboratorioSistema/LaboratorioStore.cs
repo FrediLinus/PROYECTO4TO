@@ -262,8 +262,9 @@ namespace LaboratorioSistema
             return ObtenerPrestamos().FirstOrDefault(p => p.IdPrestamo == idPrestamo);
         }
 
-        public Prestamo RegistrarPrestamo(int idResponsable, DateTime fechaPrestamo, DateTime fechaPrevista, string observaciones, List<Tuple<int, int>> items)
+        public Prestamo RegistrarPrestamo(int idPrestamo, int idResponsable, DateTime fechaPrestamo, DateTime fechaPrevista, string observaciones, List<Tuple<int, int>> items)
         {
+            if (idPrestamo <= 0) throw new InvalidOperationException("Ingrese un ID de préstamo válido.");
             if (BuscarResponsablePorId(idResponsable) == null)
                 throw new InvalidOperationException("El responsable no existe.");
 
@@ -287,9 +288,12 @@ namespace LaboratorioSistema
             }
 
             var prestamos = ObtenerPrestamos();
+            if (prestamos.Any(p => p.IdPrestamo == idPrestamo))
+                throw new InvalidOperationException("No se permiten dos préstamos con el mismo ID.");
+
             var prestamo = new Prestamo
             {
-                IdPrestamo = SiguienteId(prestamos.Select(p => p.IdPrestamo)),
+                IdPrestamo = idPrestamo,
                 IdResponsable = idResponsable,
                 FechaPrestamo = fechaPrestamo,
                 FechaPrevistaDevolucion = fechaPrevista,
@@ -333,17 +337,21 @@ namespace LaboratorioSistema
             return ObtenerMantenimientos().FirstOrDefault(m => m.IdMantenimiento == idMantenimiento);
         }
 
-        public Mantenimiento RegistrarMantenimiento(int idArticulo, TipoMantenimiento tipo, int cantidad, DateTime fechaProgramada, string tecnico, string descripcion, string observaciones)
+        public Mantenimiento RegistrarMantenimiento(int idMantenimiento, int idArticulo, TipoMantenimiento tipo, int cantidad, DateTime fechaProgramada, string tecnico, string descripcion, string observaciones)
         {
+            if (idMantenimiento <= 0) throw new InvalidOperationException("Ingrese un ID de mantenimiento válido.");
             if (cantidad <= 0) throw new InvalidOperationException("La cantidad debe ser mayor que cero.");
             var articulo = ArchivoManager.CargarArticulos().FirstOrDefault(a => a.Codigo == idArticulo);
             if (articulo == null) throw new InvalidOperationException("El artículo no existe.");
             if (articulo.Cantidad < cantidad || !articulo.EstaDisponible()) throw new InvalidOperationException("No hay existencias disponibles suficientes.");
 
             var lista = ObtenerMantenimientos();
+            if (lista.Any(m => m.IdMantenimiento == idMantenimiento))
+                throw new InvalidOperationException("No se permiten dos mantenimientos con el mismo ID.");
+
             var mantenimiento = new Mantenimiento
             {
-                IdMantenimiento = SiguienteId(lista.Select(m => m.IdMantenimiento)),
+                IdMantenimiento = idMantenimiento,
                 IdArticulo = idArticulo,
                 TipoMantenimiento = tipo,
                 Cantidad = cantidad,
@@ -394,9 +402,13 @@ namespace LaboratorioSistema
             return Leer<Movimiento>(_rutaMovimientos);
         }
 
-        public Movimiento RegistrarMovimientoManual(int idArticulo, TipoMovimiento tipo, int cantidad, string referencia, string descripcion)
+        public Movimiento RegistrarMovimientoManual(int idMovimiento, int idArticulo, TipoMovimiento tipo, int cantidad, string referencia, string descripcion)
         {
+            if (idMovimiento <= 0) throw new InvalidOperationException("Ingrese un ID de movimiento válido.");
             if (cantidad <= 0) throw new InvalidOperationException("La cantidad debe ser mayor que cero.");
+            if (ObtenerMovimientos().Any(m => m.IdMovimiento == idMovimiento))
+                throw new InvalidOperationException("No se permiten dos movimientos con el mismo ID.");
+
             var articulos = ArchivoManager.CargarArticulos();
             var articulo = articulos.FirstOrDefault(a => a.Codigo == idArticulo);
             if (articulo == null) throw new InvalidOperationException("El artículo no existe.");
@@ -410,7 +422,20 @@ namespace LaboratorioSistema
                 articulo.AplicarVariacionExistencias(cantidad);
             }
             ArchivoManager.GuardarArticulos(articulos);
-            return RegistrarMovimientoInterno(tipo, cantidad, referencia, descripcion, new[] { idArticulo });
+            var movimiento = new Movimiento
+            {
+                IdMovimiento = idMovimiento,
+                FechaHora = DateTime.Now,
+                IdArticulo = idArticulo,
+                TipoMovimiento = tipo,
+                Cantidad = cantidad,
+                ReferenciaId = referencia ?? string.Empty,
+                Descripcion = descripcion ?? string.Empty
+            };
+            var movimientos = ObtenerMovimientos();
+            movimientos.Add(movimiento);
+            Guardar(_rutaMovimientos, movimientos);
+            return movimiento;
         }
 
         private Movimiento RegistrarMovimientoInterno(TipoMovimiento tipo, int cantidad, string referencia, string descripcion, IEnumerable<int> ids)

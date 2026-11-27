@@ -105,10 +105,15 @@ namespace LaboratorioSistema
             gvReportes.DataSource = filas;
             gvReportes.DataBind();
             lblTotalRegistros.Text = string.Format("Total de registros: {0}", filas.Count);
+            if (filas.Count == 0 && (txtFechaInicio.Text.Length > 0 || txtFechaFin.Text.Length > 0 || !string.IsNullOrEmpty(ddlEstado.SelectedValue)))
+            {
+                MostrarModalArticulo("No hay artículos o registros que coincidan con los filtros seleccionados.");
+            }
             if (mostrarMensaje)
             {
                 lblMensaje.Text = "Reporte generado correctamente.";
             }
+
             return true;
         }
 
@@ -287,6 +292,14 @@ namespace LaboratorioSistema
         private static string Formatear(DateTime fecha)
         {
             return fecha.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+        }
+
+        private void MostrarModalArticulo(string mensaje)
+        {
+            string script = "document.getElementById('mensajeModalArticulo').innerText = '" +
+                mensaje.Replace("'", "\\'") +
+                "'; mostrarModalArticulo();";
+            ClientScript.RegisterStartupScript(GetType(), "modalArticulo", script, true);
         }
     }
 }

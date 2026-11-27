@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Historial de Movimientos - Laboratorio</title>
-    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link href="styles.css?v=20260324" rel="stylesheet" type="text/css" />
 </head>
 <body class="app-body">
     <form id="form1" runat="server">
@@ -40,8 +40,8 @@
                 <div class="card-body">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="<%= txtIdMovimiento.ClientID %>">ID Movimiento (Automático)</label>
-                            <asp:TextBox ID="txtIdMovimiento" runat="server" CssClass="form-control" ReadOnly="true" placeholder="Generado automáticamente"></asp:TextBox>
+                            <label for="<%= txtIdMovimiento.ClientID %>">ID del movimiento *</label>
+                            <asp:TextBox ID="txtIdMovimiento" runat="server" CssClass="form-control" TextMode="Number" min="1" placeholder="Ingrese el ID del movimiento"></asp:TextBox>
                         </div>
 
                         <div class="form-group">
@@ -122,6 +122,17 @@
             </div>
             </div>
         </div>
+        <div id="modalArticuloNoEncontrado" class="modal-articulo" role="dialog" aria-modal="true" aria-labelledby="tituloModalArticulo">
+            <div class="modal-articulo-contenido">
+                <h2 id="tituloModalArticulo">Artículo no encontrado</h2>
+                <p id="mensajeModalArticulo">El artículo no aparece en el sistema.</p>
+                <button type="button" class="modal-articulo-cerrar" onclick="cerrarModalArticulo()">Aceptar</button>
+            </div>
+        </div>
+        <script type="text/javascript">
+            function mostrarModalArticulo() { document.getElementById('modalArticuloNoEncontrado').classList.add('visible'); }
+            function cerrarModalArticulo() { document.getElementById('modalArticuloNoEncontrado').classList.remove('visible'); }
+        </script>
     </form>
 </body>
 </html>
